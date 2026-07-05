@@ -30,15 +30,15 @@ Read: `AGENTS.md` (non-negotiable rules), `docs/CURRENT_STATE.md` (rejected appr
 
 **Maximum iterations: 3.** Escalate to the human on a 4th, on a critical ambiguity, or when the same verification command fails twice in a row.
 
-1. **Review (Role B).** Delegate to Code Standards Reviewer with the review surface and any concise verified prior findings from recall/planning notes. Ask for a verdict: **PASS**, **PASS WITH NOTES**, or **BLOCK**, with line-referenced findings.
+1. **Review (Role B).** Runs on the strongest available reasoning model, so scope what you send: on **iteration 1**, delegate the full review surface. On **iterations 2-3 (re-review)**, delegate only the incremental diff since the last reviewed commit plus the prior findings list, and ask the reviewer to confirm each is resolved and flag only genuinely new issues — do not re-send the whole branch diff. Include any concise verified prior findings from recall/planning notes. Ask for a verdict: **PASS**, **PASS WITH NOTES**, or **BLOCK**, with line-referenced findings. Only re-invoke a peer steward (Quant Guardian, Trust Boundary Enforcer, etc.) if its finding category is still open or the incremental diff touches its domain.
 2. **Decide.** PASS / PASS WITH NOTES with nothing required -> Terminal. BLOCK or required changes -> continue. Critical ambiguity -> escalate and stop.
 3. **Implement fixes (Role A)**, on the feature branch only. Commit incrementally with audit-trail messages referencing the finding.
-4. **Re-verify** fresh (fixes just changed files, so no prior result qualifies).
-5. **Re-review** — go back to step 1 with the updated diff.
+4. **Re-verify** fresh (fixes just changed files, so no prior result qualifies). Use the project's cheaper/fast verification tier by default; reserve the full suite for changes to financially-critical paths (backtesting, trading, portfolio, calibration, EV/Kelly/P&L) and for the one required run at the Terminal gate — do not repeat the full suite on every iteration for other changes.
+5. **Re-review** — go back to step 1 using the incremental-diff approach above.
 
 ## Terminal (only after a successful loop)
 
-Confirm: branch clean and committed, verification green (or skips explicitly justified), reviewer verdict PASS/PASS WITH NOTES, `docs/PROJECT_HISTORY.md` updated, `main` still clean, no push/PR/remote action taken. Report:
+Confirm: branch clean and committed; verification green — run the full verification suite fresh here if the last loop iteration only used the cheaper tier (i.e. no financially-critical paths were touched), otherwise the last full-suite run already satisfies this (or skips are explicitly justified); reviewer verdict PASS/PASS WITH NOTES; `docs/PROJECT_HISTORY.md` updated; `main` still clean; no push/PR/remote action taken. Report:
 
 > **APPROVED: ready to merge into main**
 > - Topology, worktree/branch path(s), last commit, verification result, reviewer verdict, PROJECT_HISTORY entry, one-paragraph summary.

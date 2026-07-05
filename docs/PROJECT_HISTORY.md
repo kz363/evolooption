@@ -58,3 +58,16 @@
   `.codex`: agents now check committed planning notes (`Facts established`), local transcript/session
   recall when available, and pass concise verified prior findings into child worktree sessions and
   reviewer subagents instead of rediscovering the same codebase facts.
+
+## 2026-07-05 — PR Review Orchestrator agentic-efficiency pass
+
+An audit (mirrored from the sibling `../agents` repo, where PR Review Orchestrator is more heavily
+elaborated) found the bounded review loop always ran the full verification suite and re-sent the
+full branch diff to the reviewer on every iteration regardless of fix size. Updated this repo's
+canonical `.github/agents/pr-review-orchestrator.agent.md`: Step 4 re-verify now uses the cheaper
+tier by default, reserving the full suite for financially/structurally critical paths and the one
+required Terminal-gate run; Step 1/5 review now sends the full diff only on iteration 1 and an
+incremental diff plus prior findings on re-review iterations 2-3; peer-steward re-delegation on
+re-review is now conditional on the finding category still being open rather than unconditional.
+This repo has no merge-lock section, so the sibling repo's exponential-backoff polling change did
+not apply here. Doc-only change; finalization gate reduced to `git diff --check` per `AGENTS.md`.
