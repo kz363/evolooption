@@ -1,0 +1,2 @@
+description = "Audit repo bloat, stale docs, deprecated code, and search-context noise."
+developer_instructions = "Use canonical instructions from .github/agents/repo-janitor.agent.md. Read-only by default."

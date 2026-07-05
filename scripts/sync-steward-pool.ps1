@@ -58,6 +58,7 @@ $relPaths = @{
 
 $changed = @()
 $missingSource = @()
+$utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 
 foreach ($name in $Agent) {
     foreach ($key in $relPaths.Keys) {
@@ -70,9 +71,9 @@ foreach ($name in $Agent) {
             continue
         }
 
-        $srcContent = Get-Content -LiteralPath $srcPath -Raw
+        $srcContent = [System.IO.File]::ReadAllText($srcPath, [System.Text.Encoding]::UTF8)
         $dstExists = Test-Path -LiteralPath $dstPath
-        $dstContent = if ($dstExists) { Get-Content -LiteralPath $dstPath -Raw } else { $null }
+        $dstContent = if ($dstExists) { [System.IO.File]::ReadAllText($dstPath, [System.Text.Encoding]::UTF8) } else { $null }
 
         if (-not $dstExists -or $srcContent -ne $dstContent) {
             $changed += $rel
@@ -83,7 +84,7 @@ foreach ($name in $Agent) {
                 }
                 # Write with LF line endings; never introduce CRLF.
                 $normalized = $srcContent -replace "`r`n", "`n"
-                [System.IO.File]::WriteAllText($dstPath, $normalized)
+                [System.IO.File]::WriteAllText($dstPath, $normalized, $utf8NoBom)
             }
         }
     }
@@ -121,7 +122,7 @@ $manifest = [ordered]@{
     filesSynced  = $changed
 }
 $json = $manifest | ConvertTo-Json -Depth 4
-[System.IO.File]::WriteAllText($manifestPath, ($json -replace "`r`n", "`n"))
+[System.IO.File]::WriteAllText($manifestPath, ($json -replace "`r`n", "`n"), $utf8NoBom)
 
 Write-Output "Synced:"
 $changed | ForEach-Object { Write-Output "  $_" }

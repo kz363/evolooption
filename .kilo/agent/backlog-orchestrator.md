@@ -22,7 +22,7 @@ Process a markdown implementation backlog: one isolated worktree per item, code 
 ## Rules
 
 - One isolated worktree per item; never combine multiple items into one session.
-- Independent tasks, not alternate solutions â€” never launch items as versioned/alternate attempts of the same work.
+- Independent tasks, not alternate solutions — never launch items as versioned/alternate attempts of the same work.
 - Never edit the base branch directly.
 - Delegate review and merge entirely to PR Review Orchestrator from within each child session; do not reimplement the review loop here.
 - Preserve existing backlog item text when checking items off; only change the checkbox state and append the merge reference.
