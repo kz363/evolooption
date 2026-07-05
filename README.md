@@ -358,16 +358,37 @@ The `agents` trading repository is one example of a consumer that follows this p
 All tests are fully offline; adapters and HTTP calls are monkeypatched.
 No network access is required to run the suite.
 
-On Windows PowerShell:
+Verification is tiered so agents can iterate cheaply and still run a full
+gate before committing. Reuse a passing, still-valid result instead of
+rerunning it when nothing relevant changed.
 
-```powershell
+**Per-step (run frequently, cheap):**
+```bash
+ruff check <changed files>
+pytest tests/test_llm_phase1.py -q   # targeted tests for the touched module
+```
+
+**Fast full loop (run when a unit of work is done):**
+```bash
+pytest -q -n auto
+```
+
+**Finalization gate (run once before commit / PR):**
+```bash
 python -m ruff check .
-python -m pytest -q
+python -m pytest -q -n auto
 python -m compileall -q -x "(\.venv|\.venv-win)" .
 git diff --check
 ```
 
-Equivalent entrypoints are also provided via `scripts/verify.ps1`.
+On Windows PowerShell, the finalization gate is also provided via `scripts/verify.ps1`.
+
+The suite is small enough today that `-n auto` and `-m "not slow"` make little
+difference, but the `slow` marker (declared in `pyproject.toml`) and
+`pytest-xdist` are wired in now so growing test suites — in this repo or in
+consumers built on top of it — can adopt `-m "not slow"` for the fast loop
+without further setup. Mark a test `@pytest.mark.slow` once it meaningfully
+slows down the fast loop (as a rough guide, more than ~1s).
 
 `.ignore` and the repository’s default configuration exclude runtime directories such as `state/` and `outputs/`, along with virtual environments and caches, from search and editor tooling.
 

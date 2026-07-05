@@ -17,6 +17,7 @@ dependencies = []
 [project.optional-dependencies]
 dev = [
   "pytest>=8.0",
+  "pytest-xdist>=3.5.0",
   "ruff>=0.5.0"
 ]
 
@@ -30,3 +31,11 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+
+# Declare custom markers so pytest --markers works and tests can be
+# selected with -m "not slow" without "PytestUnknownMarkWarning". No test
+# currently exceeds the slow threshold; this reserves the convention for
+# consumers and future growth of the suite.
+markers = [
+    "slow: marks tests as slow-running (skipped with -m 'not slow')",
+]

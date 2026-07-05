@@ -12,3 +12,11 @@
   protected-surface checks, worktree/verification helpers, and reward-hacking tests.
 - Added Phase 4 template steward system with canonical `.github/agents` bodies, thin Kilo/Codex
   adapters, skills, and starter `AGENTS.md` registry conventions.
+- Ported the tiered verification convention validated in the `agents` consumer repo (commit
+  `2071d163`): added `pytest-xdist` to the `dev` extra, declared a `slow` marker in
+  `pyproject.toml`, and documented per-step / fast-loop (`pytest -q -n auto`) / finalization-gate
+  tiers in `AGENTS.md` and the README. `scripts/verify.ps1` now runs the finalization gate with
+  `-n auto`. The current suite (18 tests, ~0.4s) has no test slow enough to warrant
+  `@pytest.mark.slow` yet; the marker and `-m "not slow"` convention are wired in ahead of need so
+  this template and its consumers can adopt it without further setup as suites grow. Validated with
+  `pytest -q -n auto` (18 passed) and `ruff check .` (clean) after the change.
