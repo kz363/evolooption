@@ -1,0 +1,2 @@
+description = "Design and audit cross-tool AI customization assets."
+developer_instructions = "Use canonical instructions from .github/agents/ai-workflow-architect.agent.md."

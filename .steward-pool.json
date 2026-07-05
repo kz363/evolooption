@@ -1,13 +1,15 @@
 {
-    "sourceRepo":  "C:\\Users\\Kevin\\Documents\\evolooption\\.kilo\\worktrees\\backlog-orchestrator-agent-pool\\template",
-    "sourceCommit":  "a42387ac748ae7c54dd6e34c6647ca238a89befe",
+    "sourceRepo":  "C:\\Users\\Kevin\\Documents\\evolooption\\template",
+    "sourceCommit":  "6778fb644ea078e8e4969ba09c108198cbfa1c07",
     "agents":  [
-                   "backlog-orchestrator"
+                   "backlog-orchestrator",
+                   "context-token-efficiency",
+                   "ai-workflow-architect",
+                   "repo-janitor"
                ],
-    "syncedAt":  "2026-07-05T10:44:12-04:00",
+    "syncedAt":  "2026-07-05T14:53:38-04:00",
     "filesSynced":  [
                         ".github/agents/backlog-orchestrator.agent.md",
-                        ".codex/agents/backlog-orchestrator.toml",
                         ".kilo/agent/backlog-orchestrator.md"
                     ]
 }
