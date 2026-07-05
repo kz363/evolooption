@@ -1,0 +1,13 @@
+{
+    "sourceRepo":  "C:\\Users\\Kevin\\Documents\\evolooption\\.kilo\\worktrees\\backlog-orchestrator-agent-pool\\template",
+    "sourceCommit":  "a42387ac748ae7c54dd6e34c6647ca238a89befe",
+    "agents":  [
+                   "backlog-orchestrator"
+               ],
+    "syncedAt":  "2026-07-05T10:44:12-04:00",
+    "filesSynced":  [
+                        ".github/agents/backlog-orchestrator.agent.md",
+                        ".codex/agents/backlog-orchestrator.toml",
+                        ".kilo/agent/backlog-orchestrator.md"
+                    ]
+}
