@@ -1,0 +1,2 @@
+description = "Coordinate local pre-merge review loops."
+developer_instructions = "Use canonical instructions from .github/agents/pr-review-orchestrator.agent.md. Never push or merge without explicit confirmation."

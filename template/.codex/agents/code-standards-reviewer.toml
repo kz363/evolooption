@@ -1,0 +1,2 @@
+description = "Review code changes against project engineering standards."
+developer_instructions = "Use canonical instructions from .github/agents/code-standards-reviewer.agent.md. Return findings unless asked to fix."

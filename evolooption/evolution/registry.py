@@ -1,0 +1,90 @@
+import json
+from pathlib import Path
+from typing import Any
+
+from evolooption.agents.spec import ActivationRule, AgentSpec
+
+
+def activation_from_dict(data: dict[str, Any] | None) -> ActivationRule | None:
+    if data is None:
+        return None
+    return ActivationRule(
+        field=str(data["field"]),
+        operator=data["operator"],
+        value=data.get("value"),
+    )
+
+
+def activation_to_dict(rule: ActivationRule | None) -> dict[str, Any] | None:
+    if rule is None:
+        return None
+    return {"field": rule.field, "operator": rule.operator, "value": rule.value}
+
+
+def load_dynamic_entries(path: Path) -> list[AgentSpec]:
+    if not path.exists():
+        return []
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+    if not isinstance(data, list):
+        return []
+    entries: list[AgentSpec] = []
+    for item in data:
+        if not isinstance(item, dict):
+            continue
+        name = str(item.get("name", "")).strip()
+        prompt = str(item.get("prompt", "")).strip()
+        if not name or not prompt:
+            continue
+        entries.append(
+            AgentSpec(
+                name=name,
+                prompt=prompt,
+                schema=dict(item.get("schema", {})),
+                activation=activation_from_dict(item.get("activation")),
+            )
+        )
+    return entries
+
+
+def write_dynamic_entry(path: Path, spec: AgentSpec) -> None:
+    entries = [entry for entry in load_dynamic_entries(path) if entry.name != spec.name]
+    entries.append(spec)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps([_spec_to_dict(entry) for entry in entries], indent=2),
+        encoding="utf-8",
+    )
+
+
+def remove_dynamic_entry(path: Path, name: str) -> bool:
+    entries = load_dynamic_entries(path)
+    filtered = [entry for entry in entries if entry.name != name]
+    if len(filtered) == len(entries):
+        return False
+    path.write_text(
+        json.dumps([_spec_to_dict(entry) for entry in filtered], indent=2),
+        encoding="utf-8",
+    )
+    return True
+
+
+def merge_specs(
+    base: dict[str, AgentSpec],
+    dynamic_entries: list[AgentSpec],
+) -> dict[str, AgentSpec]:
+    merged = dict(base)
+    for entry in dynamic_entries:
+        merged[entry.name] = entry
+    return merged
+
+
+def _spec_to_dict(spec: AgentSpec) -> dict[str, Any]:
+    return {
+        "name": spec.name,
+        "prompt": spec.prompt,
+        "schema": spec.schema,
+        "activation": activation_to_dict(spec.activation),
+    }
