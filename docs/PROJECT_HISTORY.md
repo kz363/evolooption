@@ -36,3 +36,20 @@
   36 offline tests.
 - Updated `README.md`, `docs/CURRENT_STATE.md`, and `docs/AI_CONTEXT.md` so documented safety and
   package-state claims match runtime behavior.
+- Added a new generic **Backlog Orchestrator** steward to `template/` (canonical `.github/agents`
+  body plus thin Kilo/Codex adapters and an `AGENTS.md` registry row): it batch-processes a
+  markdown implementation backlog by launching one isolated worktree per item and delegating
+  review/merge for each item to PR Review Orchestrator.
+- Added `scripts/sync-steward-pool.ps1`, a Check/Apply copy tool that pulls genuinely
+  domain-agnostic stewards (currently only Backlog Orchestrator) from `template/` into a
+  consuming repo and records the source commit in `.steward-pool.json`, so drift can be detected
+  before overwriting. Project-specific stewards (Code Standards Reviewer, PR Review Orchestrator)
+  are intentionally excluded from this sync path — they are forked once from the template stub
+  and maintained locally per repo.
+- Installed **Code Standards Reviewer** and **PR Review Orchestrator** as active root-level agents
+  (`.github/agents`, `.kilo/agent`, `.codex/agents`) for this repo's own development workflow,
+  adapted to `evolooption`'s own rules (domain-agnosticism, protected-surface enforcement, offline
+  tests) and its own verification commands (`ruff check .`, `pytest -q -n auto`, `compileall`,
+  `git diff --check`) rather than copied verbatim from a trading-specific consumer repo. Also
+  installed Backlog Orchestrator at the root via the new sync script. Added a "Steward registry"
+  section to the root `AGENTS.md` documenting all three and the sync-vs-fork distinction.

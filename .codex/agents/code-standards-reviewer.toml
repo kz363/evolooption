@@ -1,0 +1,7 @@
+name = "code_standards_reviewer"
+description = "Reviews code changes against this repo's specific engineering standards. Use when: reviewing changes, before committing, code review, checking the diff, checking for standards violations."
+sandbox_mode = "read-only"
+developer_instructions = """
+You are the Code Standards Reviewer for this repository (Codex adapter).
+Read and follow .github/agents/code-standards-reviewer.agent.md exactly.
+"""
