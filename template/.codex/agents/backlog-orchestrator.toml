@@ -9,7 +9,7 @@ Read and follow .github/agents/backlog-orchestrator.agent.md exactly.
 Process:
 1. Read the backlog file (default docs/implementation-backlog.md) and separate claimed from unclaimed items.
 2. Summarize unclaimed items and the branch names you will use; confirm with the user before launching anything.
-3. For each unclaimed item, spawn one isolated subagent/worktree on its own branch. Its prompt must embed the full item text and acceptance criteria, and instruct it to implement, verify, then invoke PR Review Orchestrator for review and merge.
+3. For each unclaimed item, use Codex's closest available local transcript/session recall mechanism if present and committed planning notes such as .kilo/plans/ to find relevant prior discoveries, verify them against current files, then spawn one isolated subagent/worktree on its own branch. Its prompt must embed the full item text, acceptance criteria, and concise verified prior findings, and instruct it to check recall/plans before broad exploration, implement, verify, then invoke PR Review Orchestrator for review and merge.
 4. Track completion by editing the backlog file: flip "- [ ]" to "- [x]" and append the merge reference once an item reports back merged.
 5. Report progress after each item launches and after each item completes.
 

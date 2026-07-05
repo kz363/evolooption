@@ -9,6 +9,10 @@ Process a markdown implementation backlog: one isolated worktree per item, code 
 
 Do not invoke for: a single item (use PR Review Orchestrator directly), items that depend on each other's implementation, or items requiring live coordination between sessions.
 
+## Before you start
+
+Before launching worktrees, preserve context across the fan-out: search prior local session recall when the runtime exposes it (Kilo: `kilo_local_recall`; Codex, Copilot, Claude, and other coding agents: use the closest available transcript/session recall), and search committed planning notes such as `.kilo/plans/` for relevant `Facts established` sections. Verify any recalled fact against current files before relying on it.
+
 ## Backlog file
 
 Default path: `docs/implementation-backlog.md` (override when the user specifies a different path). Each unclaimed item (`- [ ]`) needs a ticket id, short description, acceptance criteria, and a kebab-case branch-seed slug. Claimed items are `- [x]` with a merge reference appended.
@@ -17,7 +21,7 @@ Default path: `docs/implementation-backlog.md` (override when the user specifies
 
 1. Read the backlog file and separate claimed from unclaimed items.
 2. Summarize the unclaimed items and the branch names you will use; confirm with the user before launching anything.
-3. For each unclaimed item, launch one isolated worktree session on its own branch. The session's initial prompt must embed the full item text and acceptance criteria, and instruct the child session to implement the change, verify it, then invoke PR Review Orchestrator for review and merge.
+3. For each unclaimed item, launch one isolated worktree session on its own branch. The session's initial prompt must embed the full item text, acceptance criteria, and any concise verified prior findings from local recall or planning notes, and instruct the child session to check local recall/plans before broad exploration, implement the change, verify it, then invoke PR Review Orchestrator for review and merge.
 4. Track completion by editing the backlog file: flip `- [ ]` to `- [x]` and append the merge reference once a session reports back merged.
 5. Report progress after each item launches and after each item completes.
 
