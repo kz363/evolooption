@@ -20,6 +20,7 @@ class Proposal:
     name: str
     rationale: str
     artifacts: dict[str, str] = field(default_factory=dict)
+    dependencies: tuple[str, ...] = ()
     metadata: dict[str, Any] = field(default_factory=dict)
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 

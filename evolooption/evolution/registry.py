@@ -53,10 +53,7 @@ def write_dynamic_entry(path: Path, spec: AgentSpec) -> None:
     entries = [entry for entry in load_dynamic_entries(path) if entry.name != spec.name]
     entries.append(spec)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps([_spec_to_dict(entry) for entry in entries], indent=2),
-        encoding="utf-8",
-    )
+    _write_entries(path, entries)
 
 
 def remove_dynamic_entry(path: Path, name: str) -> bool:
@@ -64,10 +61,7 @@ def remove_dynamic_entry(path: Path, name: str) -> bool:
     filtered = [entry for entry in entries if entry.name != name]
     if len(filtered) == len(entries):
         return False
-    path.write_text(
-        json.dumps([_spec_to_dict(entry) for entry in filtered], indent=2),
-        encoding="utf-8",
-    )
+    _write_entries(path, filtered)
     return True
 
 
@@ -79,6 +73,15 @@ def merge_specs(
     for entry in dynamic_entries:
         merged[entry.name] = entry
     return merged
+
+
+def _write_entries(path: Path, entries: list[AgentSpec]) -> None:
+    temp_path = path.with_suffix(path.suffix + ".tmp")
+    temp_path.write_text(
+        json.dumps([_spec_to_dict(entry) for entry in entries], indent=2),
+        encoding="utf-8",
+    )
+    temp_path.replace(path)
 
 
 def _spec_to_dict(spec: AgentSpec) -> dict[str, Any]:

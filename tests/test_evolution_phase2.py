@@ -93,3 +93,16 @@ def test_json_store_adds_all_postmortem_lessons(tmp_path) -> None:
     store.add_postmortem(postmortem)
 
     assert [lesson.text for lesson in store.list()] == ["one", "two"]
+
+
+def test_json_store_caps_old_lessons(tmp_path) -> None:
+    store = JSONLessonStore(tmp_path / "lessons.json", max_lessons=2)
+    postmortem = Postmortem(
+        outcome=Outcome(goal="demo", metric_value=0.0, success=False),
+        root_causes=["a"],
+        lessons=["one", "two", "three"],
+    )
+
+    store.add_postmortem(postmortem)
+
+    assert [lesson.text for lesson in store.list()] == ["two", "three"]

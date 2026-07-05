@@ -1,11 +1,18 @@
 from __future__ import annotations
 
 import json
+import time
+import urllib.error
 import urllib.request
 from dataclasses import dataclass
 from typing import Any
 
-from evolooption.llm.client import LLMClient, LLMMessage, LLMResponse
+from evolooption.llm.client import (
+    LLMClient,
+    LLMMessage,
+    LLMResponse,
+    validate_structured_output,
+)
 from evolooption.llm.roles import RoleRegistry
 
 
@@ -14,6 +21,8 @@ class OllamaClient(LLMClient):
     roles: RoleRegistry
     host: str = "http://localhost:11434"
     timeout_seconds: float = 120.0
+    retry_attempts: int = 2
+    retry_backoff_seconds: float = 0.25
 
     def complete(self, messages: list[LLMMessage], *, role: str) -> LLMResponse:
         model = self.roles.model_for(role)
@@ -38,7 +47,7 @@ class OllamaClient(LLMClient):
             LLMMessage(role="system", content=_schema_instruction(schema)),
         ]
         response = self.complete(prompt_messages, role=role)
-        return json.loads(response.content)
+        return validate_structured_output(json.loads(response.content), schema)
 
     def _post_json(self, path: str, payload: dict[str, Any]) -> dict[str, Any]:
         request = urllib.request.Request(
@@ -47,8 +56,15 @@ class OllamaClient(LLMClient):
             headers={"Content-Type": "application/json"},
             method="POST",
         )
-        with urllib.request.urlopen(request, timeout=self.timeout_seconds) as response:
-            return json.loads(response.read().decode("utf-8"))
+        for attempt in range(self.retry_attempts + 1):
+            try:
+                with urllib.request.urlopen(request, timeout=self.timeout_seconds) as response:
+                    return json.loads(response.read().decode("utf-8"))
+            except urllib.error.URLError:
+                if attempt >= self.retry_attempts:
+                    raise
+                time.sleep(self.retry_backoff_seconds * (2**attempt))
+        raise RuntimeError("unreachable retry state")
 
 
 def _schema_instruction(schema: dict[str, Any]) -> str:

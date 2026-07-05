@@ -15,12 +15,15 @@ class AgentSelector:
             spec = self.specs.get(name) or self.optional_agents.get(name)
             if spec is not None:
                 selected.append(spec)
-        for name, spec in self.optional_agents.items():
+        for name, spec in self._optional_candidates().items():
             if name in self.always_active:
                 continue
             if spec.activation is None or spec.activation.matches(context.values):
                 selected.append(spec)
         return selected
+
+    def _optional_candidates(self) -> dict[str, AgentSpec]:
+        return {**self.optional_agents, **self.specs}
 
 
 def select_agents(selector: AgentSelector, context: QueryContext) -> list[AgentSpec]:

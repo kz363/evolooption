@@ -6,14 +6,17 @@ from evolooption.learning.store import Lesson
 
 
 class JSONLessonStore:
-    def __init__(self, path: Path) -> None:
+    def __init__(self, path: Path, *, max_lessons: int | None = None) -> None:
         self.path = path
+        self.max_lessons = max_lessons
 
     def add(self, lesson: Lesson) -> None:
-        lessons = self.list()
-        lessons.append(lesson)
+        lessons = [*self.list(), lesson]
+        if self.max_lessons is not None:
+            lessons = lessons[-self.max_lessons :]
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.path.write_text(
+        temp_path = self.path.with_suffix(self.path.suffix + ".tmp")
+        temp_path.write_text(
             json.dumps(
                 [
                     {
@@ -27,6 +30,7 @@ class JSONLessonStore:
             ),
             encoding="utf-8",
         )
+        temp_path.replace(self.path)
 
     def add_postmortem(self, postmortem: Postmortem) -> None:
         for lesson in postmortem.lessons:

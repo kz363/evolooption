@@ -203,8 +203,9 @@ policy = ActionPolicy(
 )
 ```
 
-`ActionPolicy.allows()` combines three independent gates: the tool allowlist, the cumulative spend limit, and a 60-second sliding window rate limiter keyed to `time.monotonic()`.
-`require_human_approval` defaults to `True`.
+`ActionPolicy.allows()` combines the tool allowlist, cumulative spend limit, and a 60-second sliding window rate limiter keyed to `time.monotonic()`.
+`EvolutionLoop` checks `allows()` before execution, records spend/rate only after successful execution, and enforces `require_human_approval=True` through an operator-supplied `approval_callback`.
+No approval callback means the action is blocked fail-closed.
 
 ### Define agent specs and activation rules
 
@@ -288,15 +289,20 @@ lesson_store.add_postmortem(postmortem)
 
 ## Autonomy and safety controls
 
-`AutonomyTier` selects the default operating posture for a deployment:
+`AutonomyTier` can derive a default `ActionPolicy` posture through `action_policy_for_tier()`:
 
 | Tier | Behavior |
 | --- | --- |
-| `conservative` | Human approval required for all executions |
-| `assisted` | Allowlisted low-risk actions run automatically; others require approval |
-| `full-auto` | All policy-allowed actions run automatically within spend and rate limits |
+| `conservative` | Human approval required for every policy-allowed execution |
+| `assisted` | Policy-allowlisted actions run automatically within spend and rate limits |
+| `full-auto` | Policy-allowlisted actions run automatically within spend and rate limits |
 
-`ProtectedSurface` declares what the loop may never modify.
+> **Note:** `assisted` and `full-auto` currently behave identically because the framework does not yet
+> expose a per-tool risk classification. Both tiers disable mandatory human approval and rely on the
+> allowlist, spend limit, and rate limit gates. Risk-tiered allowlists are planned for a future
+> release.
+
+`ProtectedSurface` declares protected path globs. The loop enforces them only when constructed with a `changed_paths_provider`, such as `WorktreeRunner.changed_paths`; without a provider, direct protected-surface enforcement is inactive.
 
 ```python
 from evolooption.policy import ProtectedSurface
@@ -313,12 +319,15 @@ surface.validate_changed_paths(
 `VerificationRunner` executes configured verification commands before accepting changes.
 `WorktreeRunner` executes proposals in isolated git worktrees.
 
-The loop may never:
+The loop enforces these safety guarantees:
 
-- Modify `MetricEvaluator` implementations used by the loop.
-- Modify protected-surface declarations.
-- Bypass `ActionPolicy` gates, including spend, rate, and human-approval requirements.
-- Execute any action whose tool is not in the allowlist.
+- Actions denied by the tool allowlist, spend limit, or rate limit are blocked and recorded.
+- Actions requiring human approval are blocked unless an operator callback is supplied and returns
+  `True`.
+- Actions whose resulting changed paths touch protected-surface globs are blocked when a
+  `changed_paths_provider` is configured.
+
+The loop does not execute actions whose tool is not in the allowlist or that bypass policy gates.
 
 ## Steward template
 
