@@ -53,3 +53,8 @@
   `git diff --check`) rather than copied verbatim from a trading-specific consumer repo. Also
   installed Backlog Orchestrator at the root via the new sync script. Added a "Steward registry"
   section to the root `AGENTS.md` documenting all three and the sync-vs-fork distinction.
+- Added cross-agent discovery-reuse guidance to the root and template `AGENTS.md` files, plus the
+  Backlog Orchestrator and PR Review Orchestrator bodies/adapters for `.github`, `.kilo`, and
+  `.codex`: agents now check committed planning notes (`Facts established`), local transcript/session
+  recall when available, and pass concise verified prior findings into child worktree sessions and
+  reviewer subagents instead of rediscovering the same codebase facts.

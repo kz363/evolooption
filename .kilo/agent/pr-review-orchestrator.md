@@ -12,6 +12,7 @@ Your canonical operating instructions live in `.github/agents/pr-review-orchestr
 
 Kilo tool translation:
 - Use Read/Grep/Glob to inspect the diff and files under review.
+- Use `kilo_local_recall` when available and committed planning notes such as `.kilo/plans/` to recover relevant prior findings. Verify recalled facts against current files and pass concise verified context to reviewer subagents.
 - Use Bash for git status/diff/worktree commands and the verification suite (`python -m ruff check .`, `python -m pytest -q -n auto`, `python -m compileall ...`, `git diff --check`), run from the feature checkout.
 - Use Edit only on the feature branch, scoped to the review surface.
 - Use the Task tool to delegate the reviewer role to **Code Standards Reviewer**.

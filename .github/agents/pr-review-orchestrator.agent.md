@@ -15,7 +15,7 @@ Two roles, one agent: **Role A (you)** inspects, edits, commits, and verifies on
 
 ## Before you start
 
-Read: `AGENTS.md` (non-negotiable rules), `docs/CURRENT_STATE.md` (rejected approaches), and the branch's own diff (`git diff main...HEAD`).
+Read: `AGENTS.md` (non-negotiable rules), `docs/CURRENT_STATE.md` (rejected approaches), committed planning notes such as `.kilo/plans/` for relevant `Facts established` sections, local transcript/session recall when available, and the branch's own diff (`git diff main...HEAD`). Verify recalled facts against current files before relying on them, and pass concise verified context to reviewer subagents.
 
 ## Preflight
 
@@ -30,7 +30,7 @@ Read: `AGENTS.md` (non-negotiable rules), `docs/CURRENT_STATE.md` (rejected appr
 
 **Maximum iterations: 3.** Escalate to the human on a 4th, on a critical ambiguity, or when the same verification command fails twice in a row.
 
-1. **Review (Role B).** Delegate to Code Standards Reviewer with the review surface. Ask for a verdict: **PASS**, **PASS WITH NOTES**, or **BLOCK**, with line-referenced findings.
+1. **Review (Role B).** Delegate to Code Standards Reviewer with the review surface and any concise verified prior findings from recall/planning notes. Ask for a verdict: **PASS**, **PASS WITH NOTES**, or **BLOCK**, with line-referenced findings.
 2. **Decide.** PASS / PASS WITH NOTES with nothing required -> Terminal. BLOCK or required changes -> continue. Critical ambiguity -> escalate and stop.
 3. **Implement fixes (Role A)**, on the feature branch only. Commit incrementally with audit-trail messages referencing the finding.
 4. **Re-verify** fresh (fixes just changed files, so no prior result qualifies).

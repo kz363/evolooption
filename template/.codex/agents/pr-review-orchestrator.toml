@@ -1,2 +1,2 @@
 description = "Coordinate local pre-merge review loops."
-developer_instructions = "Use canonical instructions from .github/agents/pr-review-orchestrator.agent.md. Never push or merge without explicit confirmation."
+developer_instructions = "Use canonical instructions from .github/agents/pr-review-orchestrator.agent.md. Before broad exploration, use any available local transcript/session recall and committed planning notes, verify recalled facts against current files, and pass concise verified context to reviewer subagents. Never push or merge without explicit confirmation."

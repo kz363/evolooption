@@ -15,7 +15,7 @@ Process a markdown implementation backlog: one isolated worktree per item, code 
 
 1. Read the backlog file and separate claimed from unclaimed items.
 2. Summarize the unclaimed items and the branch names you will use; confirm with the user before launching anything.
-3. For each unclaimed item, launch one isolated worktree session on its own branch. The session's initial prompt must embed the full item text and acceptance criteria, and instruct the child session to implement the change, verify it, then invoke PR Review Orchestrator for review and merge.
+3. For each unclaimed item, use `kilo_local_recall` when available and committed planning notes such as `.kilo/plans/` to find relevant prior discoveries, verify them against current files, then launch one isolated worktree session on its own branch. The session's initial prompt must embed the full item text, acceptance criteria, and concise verified prior findings, and instruct the child session to check recall/plans before broad exploration, implement the change, verify it, then invoke PR Review Orchestrator for review and merge.
 4. Track completion by editing the backlog file: flip `- [ ]` to `- [x]` and append the merge reference once a session reports back merged.
 5. Report progress after each item launches and after each item completes.
 
