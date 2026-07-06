@@ -59,7 +59,28 @@
   recall when available, and pass concise verified prior findings into child worktree sessions and
   reviewer subagents instead of rediscovering the same codebase facts.
 
-## 2026-07-05 — PR Review Orchestrator agentic-efficiency pass
+## 2026-07-06 — Seed global Kilo agent config and add project-memory skill
+
+### Problem
+
+Generic agents, skills, and commands existed only inside `template/` as adapters pointing to canonical bodies, requiring repos to copy them or implement their own. No shared cross-repo foundation existed.
+
+### Decisions and Implementation
+
+- Added self-contained generic agents to `~/.config/kilo/agent/`: `ai-workflow-architect`, `backlog-orchestrator`, `code-standards-reviewer`, `context-token-efficiency`, `pr-review-orchestrator`, `repo-janitor`.
+- Added generic skills to `~/.config/kilo/skill/`: `context-token-efficiency`, `tests-offline`, and a new `project-memory` skill distilled from alpacagents' doc-memory pattern (repo map + current-state doc + history log + pending-fragment reconciliation).
+- Added generic commands to `~/.config/kilo/command/`: `recommend-ai-customizations`, `repo-hygiene-audit`, `run-implementation-backlog`, `verify`.
+- Updated `llama_router/AGENTS.md` with context preservation section and created `docs/AI_CONTEXT.md` + `docs/CURRENT_STATE.md`.
+- Updated `evolooption/docs/AI_CONTEXT.md` to note global agent config availability.
+- Updated `evolooption/docs/CURRENT_STATE.md` with recent changes.
+- Updated `alpacagents/docs/AI_CONTEXT.md` to clarify global config exists but repo uses customized versions.
+- Removed redundant skills from `alpacagents/.agents/skills/context-efficiency` and `tests-offline` since global versions now provide equivalent coverage.
+
+### Validation
+
+- All 13 global agent/skill/command files validated (Kilo config auto-validation on write).
+- Code review passed: no blocking issues, corrected all should-fix items (description lengths, permission contradictions, mode references).
+- Kilo loads global config automatically; files discovered in agent/command/skill search paths.
 
 An audit (mirrored from the sibling `../agents` repo, where PR Review Orchestrator is more heavily
 elaborated) found the bounded review loop always ran the full verification suite and re-sent the

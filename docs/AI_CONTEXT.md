@@ -2,6 +2,16 @@
 
 `evolooption` is a Python package plus starter template for self-learning multi-agent projects.
 
+## Global agent config
+
+Generic agents, skills, and commands are now available in the global Kilo config at `~/.config/kilo/`. These are domain-agnostic:
+
+- **Agents**: `ai-workflow-architect`, `backlog-orchestrator`, `code-standards-reviewer`, `context-token-efficiency`, `pr-review-orchestrator`, `repo-janitor`
+- **Skills**: `context-token-efficiency`, `project-memory`, `tests-offline`
+- **Commands**: `recommend-ai-customizations`, `repo-hygiene-audit`, `run-implementation-backlog`, `verify`
+
+These global agents follow the canonical-body-plus-adapter pattern used by this repo, but are self-contained.
+
 ## Package map
 
 - `evolooption.llm`: provider-agnostic LLM interfaces, role registry, Ollama and OpenAI-compatible adapters with structured-output validation and bounded retries.
