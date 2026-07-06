@@ -93,3 +93,34 @@ incremental diff plus prior findings on re-review iterations 2-3; peer-steward r
 re-review is now conditional on the finding category still being open rather than unconditional.
 This repo has no merge-lock section, so the sibling repo's exponential-backoff polling change did
 not apply here. Doc-only change; finalization gate reduced to `git diff --check` per `AGENTS.md`.
+
+## 2026-07-06 — PR Review Orchestrator: adaptive iterations by risk tier
+
+### Problem
+
+The PR Review Orchestrator's bounded review loop used a fixed 3-iteration maximum for all changes,
+causing unnecessary delays for simple non-risk-tier changes. Each iteration involved expensive
+delegation to Code Standards Reviewer on the strongest reasoning model.
+
+### Decisions and Implementation
+
+- Changed max iterations from fixed 3 to adaptive: 3 for risk-tier changes (touches
+  `backtesting/`, `trading/`, `portfolio/`, `calibration/`, `evolution/`, or any
+  statistics/EV/Kelly/P&L logic), 1 for all others.
+- On iteration 1, run the full delegation chain in parallel — Code Standards Reviewer
+  + Quantitative Standards Guardian (if risk-tier) + Trust Boundary Enforcer (if
+  LLM↔Python boundary / broker mutations / replay pipelines) + specialist-registration
+  skill (if new/modified LLM specialist) + AI Workflow Architect / Repo Janitor /
+  Context/Token-Efficiency Steward (if agent-context hygiene findings).
+- Only iterate on risk-tier changes if reviewer explicitly requests re-review for
+  specific unresolved findings.
+- Incremental diffs are sent on iterations 2+ instead of full branch diffs.
+- Updated output format to show adaptive max iterations: "N of M (max M: 1 for non-risk-tier,
+  3 for risk-tier)".
+
+### Validation
+
+- `ruff check .` passed.
+- `pytest -q -n auto` passed (18 tests).
+- `git diff --check` passed.
+- Documentation review returned PASS.
