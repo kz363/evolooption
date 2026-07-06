@@ -1,0 +1,23 @@
+{
+  "search.exclude": {
+    "**/.venv": true,
+    "**/venv": true,
+    "**/env": true,
+    "**/node_modules": true,
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.ruff_cache": true,
+    "**/.mypy_cache": true,
+    "**/.next": true,
+    "**/.turbo": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/coverage": true,
+    "**/*.log": true
+  },
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.ruff_cache": true
+  }
+}
