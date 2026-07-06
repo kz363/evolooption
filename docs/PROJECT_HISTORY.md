@@ -75,6 +75,7 @@ Generic agents, skills, and commands existed only inside `template/` as adapters
 - Updated `evolooption/docs/CURRENT_STATE.md` with recent changes.
 - Updated `alpacagents/docs/AI_CONTEXT.md` to clarify global config exists but repo uses customized versions.
 - Removed redundant skills from `alpacagents/.agents/skills/context-efficiency` and `tests-offline` since global versions now provide equivalent coverage.
+- Removed redundant skills from `evolooption/.agents/skills/` and `evolooption/template/.agents/skills/` since global versions provide the same coverage and are auto-discovered.
 
 ### Validation
 
