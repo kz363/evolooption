@@ -28,13 +28,34 @@ Read: `AGENTS.md` (non-negotiable rules), `docs/CURRENT_STATE.md` (rejected appr
 
 ## The bounded review loop
 
-**Maximum iterations: 3.** Escalate to the human on a 4th, on a critical ambiguity, or when the same verification command fails twice in a row.
+**Maximum iterations: 3 for risk-tier changes (touches backtesting/, trading/, portfolio/, calibration/, evolution/, or any statistics/EV/Kelly/P&L logic), 1 for all others.** Escalate to the human on a 4th, on a critical ambiguity, or when the same verification command fails twice in a row.
 
-1. **Review (Role B).** Runs on the strongest available reasoning model, so scope what you send: on **iteration 1**, delegate the full review surface. On **iterations 2-3 (re-review)**, delegate only the incremental diff since the last reviewed commit plus the prior findings list, and ask the reviewer to confirm each is resolved and flag only genuinely new issues — do not re-send the whole branch diff. Include any concise verified prior findings from recall/planning notes. Ask for a verdict: **PASS**, **PASS WITH NOTES**, or **BLOCK**, with line-referenced findings. Only re-invoke a peer steward (Quant Guardian, Trust Boundary Enforcer, etc.) if its finding category is still open or the incremental diff touches its domain.
-2. **Decide.** PASS / PASS WITH NOTES with nothing required -> Terminal. BLOCK or required changes -> continue. Critical ambiguity -> escalate and stop.
-3. **Implement fixes (Role A)**, on the feature branch only. Commit incrementally with audit-trail messages referencing the finding.
-4. **Re-verify** fresh (fixes just changed files, so no prior result qualifies). Use the project's cheaper/fast verification tier by default; reserve the full suite for changes to financially-critical paths (backtesting, trading, portfolio, calibration, EV/Kelly/P&L) and for the one required run at the Terminal gate — do not repeat the full suite on every iteration for other changes.
-5. **Re-review** — go back to step 1 using the incremental-diff approach above.
+**Iteration strategy:**
+- **Iteration 1 (all tiers):** run the full delegation chain in parallel — Code Standards Reviewer + Quantitative Standards Guardian (if risk-tier) + Trust Boundary Enforcer (if LLM↔Python boundary / broker mutations / replay pipelines) + specialist-registration skill (if new/modified LLM specialist) + AI Workflow Architect / Repo Janitor / Context/Token-Efficiency Steward (if agent-context hygiene findings). Do not sequence; invoke all applicable stewards simultaneously on the strongest available reasoning model.
+- **Iteration 2+ (risk-tier only, only if reviewer explicitly requests):** send only the **incremental diff** — `git diff <sha-of-last-reviewed-commit>...HEAD` — plus the prior iteration's findings list. Ask the reviewer to (a) confirm each prior BLOCK/required-change finding is resolved and (b) flag only genuinely new issues introduced by the fix commits. Do not re-send the full branch diff for unchanged portions the reviewer already passed. Only re-invoke a given peer steward if that steward's finding category is still open (not yet confirmed fixed) or the incremental diff touches new files inside that steward's domain.
+
+### Step 2 — Decide
+
+- **PASS** or **PASS WITH NOTES** with no required changes → proceed to **Terminal**.
+- **BLOCK** or notes requiring changes → continue to Step 3.
+- **Critical ambiguity** flagged by reviewer → **Escalate to human** and stop the loop; do not guess.
+
+### Step 3 — Implement fixes (Role A, on the feature branch only)
+
+Apply required fixes from the reviewer's findings on the feature branch only. Commit incrementally with audit-trail messages referencing the finding. Do not touch `main` or create new branches.
+
+### Step 4 — Re-verify (Role A)
+
+Re-run verification fresh — the fixes just changed files. Which tier depends on the review surface:
+
+- **Risk-tier review surface** (touches `backtesting/`, `trading/`, `portfolio/`, `calibration/`, `evolution/`, or any statistics/EV/Kelly/P&L logic): run the full finalization-gate suite fresh, every iteration.
+- **Everything else:** run the cheaper **fast full loop** tier (`ruff check <changed files>` + `pytest -q -n auto -m "not slow"` scoped to touched modules). Reserve the full suite for the Terminal gate — do not repeat it on every fix cycle for non-risk-tier changes.
+
+If the same verification command fails twice in a row, **escalate to human** and stop the loop.
+
+### Step 5 — Re-review
+
+Go back to Step 1 using the incremental-diff approach described there.
 
 ## Terminal (only after a successful loop)
 
