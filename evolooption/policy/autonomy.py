@@ -24,6 +24,9 @@ class ProtectedSurface:
         if blocked:
             raise PermissionError("protected surface modified: " + ", ".join(blocked))
 
+    def validate_changed_paths_for_approval(self, changed_paths: list[str]) -> bool:
+        return any(self.protects(path) for path in changed_paths)
+
 
 def action_policy_for_tier(
     tier: AutonomyTier,
@@ -31,8 +34,13 @@ def action_policy_for_tier(
     allowed_tools: set[str] | None = None,
     spend_limit: float | None = None,
     rate_limit_per_minute: int | None = None,
+    protected_surface: ProtectedSurface | None = None,
+    changed_paths: list[str] | None = None,
 ) -> ActionPolicy:
     require_human_approval = tier is AutonomyTier.CONSERVATIVE
+    if protected_surface is not None and changed_paths is not None:
+        if protected_surface.validate_changed_paths_for_approval(changed_paths):
+            require_human_approval = True
     return ActionPolicy(
         allowed_tools=allowed_tools or set(),
         require_human_approval=require_human_approval,

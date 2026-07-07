@@ -93,6 +93,62 @@ def test_autonomy_tier_derives_action_policy() -> None:
     assert full_auto.require_human_approval is False
 
 
+def test_non_conservative_tier_overridden_for_protected_surface_changes() -> None:
+    surface = ProtectedSurface(globs=("trading/**", "calibration/**", "scoring.py"))
+
+    conservative = action_policy_for_tier(
+        AutonomyTier.CONSERVATIVE,
+        allowed_tools={"edit"},
+        protected_surface=surface,
+        changed_paths=["trading/alpaca_gateway.py"],
+    )
+    assisted = action_policy_for_tier(
+        AutonomyTier.ASSISTED,
+        allowed_tools={"edit"},
+        protected_surface=surface,
+        changed_paths=["trading/alpaca_gateway.py"],
+    )
+    full_auto = action_policy_for_tier(
+        AutonomyTier.FULL_AUTO,
+        allowed_tools={"edit"},
+        protected_surface=surface,
+        changed_paths=["trading/alpaca_gateway.py"],
+    )
+
+    assert conservative.require_human_approval is True
+    assert assisted.require_human_approval is True
+    assert full_auto.require_human_approval is True
+
+
+def test_non_conservative_tier_preserved_for_safe_changes() -> None:
+    surface = ProtectedSurface(globs=("trading/**", "calibration/**", "scoring.py"))
+
+    assisted = action_policy_for_tier(
+        AutonomyTier.ASSISTED,
+        allowed_tools={"edit"},
+        protected_surface=surface,
+        changed_paths=["agents/new_specialist.md"],
+    )
+    full_auto = action_policy_for_tier(
+        AutonomyTier.FULL_AUTO,
+        allowed_tools={"edit"},
+        protected_surface=surface,
+        changed_paths=["agents/new_specialist.md"],
+    )
+
+    assert assisted.require_human_approval is False
+    assert full_auto.require_human_approval is False
+
+
+def test_protected_surface_validate_changed_paths_for_approval() -> None:
+    surface = ProtectedSurface(globs=("trading/**", "calibration/**"))
+
+    assert surface.validate_changed_paths_for_approval(["trading/alpaca_gateway.py"]) is True
+    assert surface.validate_changed_paths_for_approval(["calibration/ledger.py"]) is True
+    assert surface.validate_changed_paths_for_approval(["agents/new.md"]) is False
+    assert surface.validate_changed_paths_for_approval([]) is False
+
+
 def test_signal_model_accepts_metadata() -> None:
     signal = Signal(kind="gap", source="test", strength=0.75, metadata={"count": 3})
 
