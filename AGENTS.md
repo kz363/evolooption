@@ -32,7 +32,7 @@ When this agent spawns any subagent — via the Task tool, `agent_manager`, or a
 ### Workflow
 
 1. **Assess the subagent task.** Classify sensitivity (`CONFIDENTIAL` vs `NON-CONFIDENTIAL`) and capability need.
-2. **Select the cheapest sufficient tier.**
+2. **Select the tier.** For **free** tiers, cost is zero, so pick the **strongest free model** that can properly do the task (never the smallest/cheapest). For **paid** tiers, pick the cheapest sufficient tier.
 3. **Prompt the human.** Call the `question` tool once with a short recommendation plus alternatives. Include the recommended option first. Only after the user selects should you spawn the subagent with that model choice.
 4. **Honor the choice.** Spawn the subagent with exactly the model the user selected. Do not substitute a different model after the user has chosen.
 
