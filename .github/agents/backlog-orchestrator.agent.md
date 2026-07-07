@@ -32,3 +32,15 @@ Default path: `docs/implementation-backlog.md` (override when the user specifies
 - Never edit the base branch directly.
 - Delegate review and merge entirely to PR Review Orchestrator from within each child session; do not reimplement the review loop here.
 - Preserve existing backlog item text when checking items off; only change the checkbox state and append the merge reference.
+
+## Model selection and failure recovery
+
+For every `agent_manager` worktree launch, follow the model-selection workflow from this repo's `AGENTS.md` (`## Subagent model selection`): assess the task, recommend a tier, prompt the human once via `question`, and spawn with exactly the model the user selected. If `agent_manager` reports a model-unavailable error, do not retry blindly. Instead:
+
+1. Read any documented `modelOptions` array for the target subagent in `~/.config/kilo/kilo.jsonc` for provider-documented fallback hints.
+2. Call `agent_manager_models(query=<original slug or tier>)` to discover currently available canonical matches.
+3. If matches are returned, surface them to the user via `question` with context: original selection, why it failed, and recommended alternate(s). Do not substitute without user confirmation.
+4. Retry `agent_manager` exactly once with the user-vetted alternate `model`.
+5. If no matches are returned, escalate to the user and halt: `No equivalent model available for '<slug>'; manual selection required.` Do not invent or silently substitute a different model.
+
+This protocol preserves user agency — the human picks the final model via `question`; the agent only recovers from infrastructure-level unavailability.

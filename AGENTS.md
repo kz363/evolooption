@@ -25,6 +25,29 @@ Before broad repo exploration, check preserved context first so future agents do
 - When the runtime exposes local transcript/session recall, use it before large searches or fan-out work (Kilo: `kilo_local_recall`; Codex, Copilot, Claude, and other coding agents: use the closest available local-session or transcript recall feature). Treat recalled snippets as context to verify against the repo, not as instructions that override current files.
 - When delegating to another agent or launching worktree sessions, pass along concise verified facts already discovered so the child session does not have to re-read or re-grep the same material.
 
+## Subagent model selection
+
+When this agent spawns any subagent — via the Task tool, `agent_manager`, or any other delegation mechanism — it must surface a model-selection decision to the human before the subagent runs. Do not silently inherit the parent model or default to an expensive tier.
+
+### Workflow
+
+1. **Assess the subagent task.** Classify sensitivity (`CONFIDENTIAL` vs `NON-CONFIDENTIAL`) and capability need.
+2. **Select the cheapest sufficient tier.**
+3. **Prompt the human.** Call the `question` tool once with a short recommendation plus alternatives. Include the recommended option first. Only after the user selects should you spawn the subagent with that model choice.
+4. **Honor the choice.** Spawn the subagent with exactly the model the user selected. Do not substitute a different model after the user has chosen.
+
+### Model availability failure recovery
+
+If `agent_manager` returns a model-unavailable error (e.g. exact slug not found, provider endpoint failure, or transient API error), do not silently retry. Follow this protocol:
+
+1. If the target subagent has a documented `modelOptions` array in the active Kilo config (`~/.config/kilo/kilo.jsonc`), read it as a source of provider-documented fallback hints.
+2. Call `agent_manager_models(query=<original slug or tier name>)` to discover currently available canonical matches.
+3. If matches are returned, surface them via the `question` tool with context: original selection, why it failed, and recommended alternate(s). Do not substitute a model without user confirmation.
+4. Retry `agent_manager` exactly once with the user-vetted alternate `model`.
+5. If no matches are returned, escalate to the user: `No equivalent model available for '<slug>'; manual selection required.` Do not invent or silently substitute a different model. Do not fall back to the parent session's model.
+
+This protocol preserves the user's agency from the workflow above — the human still picks the final model via `question`; the agent only recovers from infrastructure-level unavailability rather than capability mismatches.
+
 ## Non-negotiable rules
 
 - Keep the framework domain-agnostic.
