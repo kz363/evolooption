@@ -2,6 +2,13 @@
 
 This repository contains the reusable `evolooption` framework and starter template.
 
+## Workspace context
+
+This repo is part of a multi-repo workspace at `~/projects/ai/`. Before cross-repo work or broad exploration, read:
+- `~/projects/ai/AGENTS.md` — workspace routing rules
+- `~/projects/ai/_ai-context/cross-repo-map.md` — repo inventory, agent registry, cross-repo dependencies
+- `.kilo/skills/workspace-orientation/SKILL.md` — workspace navigation skill
+
 ## Steward registry
 
 | Agent | When to invoke |
