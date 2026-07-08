@@ -8,6 +8,8 @@ This repo is part of a multi-repo workspace at `~/projects/ai/`. Before cross-re
 - `~/projects/ai/AGENTS.md` — workspace routing rules
 - `~/projects/ai/_ai-context/cross-repo-map.md` — repo inventory, agent registry, cross-repo dependencies
 - `.kilo/skills/workspace-orientation/SKILL.md` — workspace navigation skill
+- `.kilo/skills/ledger-steward/SKILL.md` — ledger update governance
+- `/update-codebase-ledger` — propose durable knowledge updates
 
 ## Steward registry
 
