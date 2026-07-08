@@ -10,6 +10,7 @@ This repo is part of a multi-repo workspace at `~/projects/agent-harness/`. Befo
 - `.kilo/skills/workspace-orientation/SKILL.md` — workspace navigation skill
 - `.kilo/skills/ledger-steward/SKILL.md` — ledger update governance
 - `/update-codebase-ledger` — propose durable knowledge updates
+- Treat `../kilocode/` as read-only reference material in this workspace unless explicit owner authorization is provided.
 
 ## Steward registry
 
