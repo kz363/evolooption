@@ -25,15 +25,18 @@ You are working in a multi-repo workspace at `~/projects/ai/`.
 
 ## Durable knowledge locations
 
-| Type | Location |
-|---|---|
-| Workspace routing rules | `~/projects/ai/AGENTS.md` |
-| Cross-repo ledger | `~/projects/ai/_ai-context/cross-repo-map.md` |
-| Per-repo rules | `<repo>/AGENTS.md` |
-| Subsystem notes | `<repo>/docs/ai/subsystems/<name>.md` |
-| Skills | `<repo>/.kilo/skills/<name>/SKILL.md` |
-| Commands | `<repo>/.kilo/command/<name>.md` |
-| Plans | `<repo>/.kilo/plans/<timestamp>-<name>.md` |
+| Type | Location | Cross-tool parity |
+|---|---|---|
+| Workspace routing rules | `~/projects/ai/AGENTS.md` | All tools |
+| Cross-repo ledger | `~/projects/ai/_ai-context/cross-repo-map.md` | All tools |
+| Per-repo rules | `<repo>/AGENTS.md` | All tools |
+| Subsystem notes | `<repo>/docs/ai/subsystems/<name>.md` | All tools |
+| Skills (Kilo native) | `<repo>/.kilo/skills/<name>/SKILL.md` | Canonical source |
+| Skills (cross-tool) | `<repo>/.agents/skills/<name>/` (Codex), `<repo>/.claude/skills/<name>/` (Claude Code) | Symlinks to canonical |
+| Commands (Kilo) | `<repo>/.kilo/command/<name>.md` | Canonical source |
+| Commands (Copilot) | `<repo>/.github/prompts/<name>.prompt.md` | Same content, Copilot format |
+| Commands (Claude Code) | `<repo>/.claude/commands/<name>.md` | Same content, Claude Code format |
+| Plans | `<repo>/.kilo/plans/<timestamp>-<name>.md` | Git-tracked |
 
 ## This repo's key facts
 
