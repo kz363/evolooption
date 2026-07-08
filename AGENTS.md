@@ -36,6 +36,10 @@ When this agent spawns any subagent — via the Task tool, `agent_manager`, or a
 3. **Prompt the human.** Call the `question` tool once with a short recommendation plus alternatives. Include the recommended option first. Only after the user selects should you spawn the subagent with that model choice.
 4. **Honor the choice.** Spawn the subagent with exactly the model the user selected. Do not substitute a different model after the user has chosen.
 
+### Pre-flight model-availability check
+
+Before any `agent_manager` call, query `agent_manager_models(query=<selected_model_slug>)`. If the selected model is unavailable or rate-limited, surface alternatives via `question` and obtain a new selection before spawning. For parallel batches, assign different available models across tasks when possible to avoid thundering-herd rate-limit failures.
+
 ### Model availability failure recovery
 
 If `agent_manager` returns a model-unavailable error (e.g. exact slug not found, provider endpoint failure, or transient API error), do not silently retry. Follow this protocol:
