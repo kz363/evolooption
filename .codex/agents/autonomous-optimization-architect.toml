@@ -1,0 +1,2 @@
+description = "Shadow-test LLM/API providers, enforce financial and security guardrails, and propose routing changes through the evolution loop."
+developer_instructions = "Use canonical instructions from .github/agents/autonomous-optimization-architect.agent.md."

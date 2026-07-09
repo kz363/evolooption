@@ -12,6 +12,7 @@ This project uses `evolooption` steward conventions.
 | Context/Token-Efficiency Steward | Reduce token bloat and improve AI context routing |
 | PR Review Orchestrator | Final local branch review loop before merge |
 | Backlog Orchestrator | Batch-process an independent-item implementation backlog via isolated worktrees, delegating review/merge per item to PR Review Orchestrator |
+| Autonomous Optimization Architect | Adding or reviewing LLM routing, circuit breakers, cost tracking, or shadow-traffic logic; optimizing provider spend, latency, or reliability |
 
 ## Cross-tool authoring
 

@@ -124,3 +124,60 @@ delegation to Code Standards Reviewer on the strongest reasoning model.
 - `pytest -q -n auto` passed (18 tests).
 - `git diff --check` passed.
 - Documentation review returned PASS.
+
+## 2026-07-09 — Autonomous Optimization Architect steward + optimization subpackage
+
+### Problem
+
+The framework had no domain-agnostic primitives for governing LLM/provider economics
+(cost tracking, circuit breaking, weight-based routing, shadow testing, LLM-as-a-Judge
+grading) and no steward persona for that concern. Consumers (e.g. the alpacagents
+trading repo) would otherwise have to invent these per-domain and risk inconsistent
+guardrails.
+
+### Decisions and Implementation
+
+- Added a new `Autonomous Optimization Architect` steward to both `template/` (seed)
+  and the root `evolooption/` repo: canonical `.github/agents/*.agent.md` body plus
+  thin `.kilo/agent/*.md` and `.codex/agents/*.toml` adapters, and an `AGENTS.md`
+  registry row in both locations. The persona enforces propose-and-gate: it emits
+  `Proposal(kind="config-change")` objects, never mutates routing state directly,
+  and references existing `ActionPolicy` / `ProtectedSurface` rather than restating
+  them. Body is ≤120 lines, stripped of emoji/`vibe`/redundant examples.
+- Added a new `evolooption.optimization` subpackage (Phase 5) with domain-agnostic
+  primitives: `ProviderCircuitBreaker` (provider-failure velocity with cooldown),
+  `CostTracker` + `TokenUsage` + `ProviderPricing` (provider-agnostic cost extraction
+  from `LLMResponse.raw` for Ollama `prompt_eval_count`/`eval_count` and OpenAI
+  `usage.*`), `Provider` + `ProviderRouter` (weight-based selection, breaker-aware
+  fallback, per-run cost cap), `LLMJudge` + `RubricCriterion` (declarative numeric
+  rubric enforcement), `ShadowRunner` (paired baseline/candidate grading with
+  signal emission), and `OptimizationPolicy` (wraps `ActionPolicy` with
+  shadow-traffic %, breaker config, and role allowlist).
+- Added `OptimizationSignalKind` constants (`high-llm-cost`, `provider-degraded`,
+  `shadow-win`) and `OptimizationProposalRule` (implements `ProposalRule` from
+  `evolooption.evolution.analyzer`) so the optimization layer maps signals into
+  `config-change` proposals that flow through the existing `ProposalEngine`. A
+  `build_default_optimization_rules()` helper composes the three rules.
+- Updated `docs/ARCHITECTURE.md` with the new subpackage row and a trust-boundary
+  note: optimization wraps LLM calls and proposes config changes; it must not
+  modify metrics, protected surfaces, approval gates, or broker/execution paths.
+- Added the agent row to `_ai-context/cross-repo-map.md` (repo `evolooption`,
+  no alpacagents row yet — Phase 4 of the plan defers the alpacagents persona
+  until the repo runs ≥2 LLM providers).
+- Registered the steward in `evolooption/AGENTS.md` and `evolooption/template/AGENTS.md`.
+- Added `tests/test_optimization_phase5.py` with 33 offline tests covering:
+  cost extraction for both providers, per-provider cost aggregation, breaker
+  trip/reset/cooldown, router weight preference and fallback, cost-cap enforcement,
+  judge rubric enforcement and clamping, shadow emission at threshold, policy
+  validation, signal/proposal rule threshold gating, and default rule set.
+
+### Validation
+
+- `pytest -q -n auto` passes (66 tests: 39 pre-existing + 27 new in the
+  optimization suite, plus the 6 new signal/proposal tests added in this entry).
+- `python -m ruff check .` is clean for all new files; the single remaining
+  warning is a pre-existing `SIM102` in `evolooption/policy/autonomy.py` that is
+  not part of this change.
+- `python -m compileall -q -x '(\.venv|\.venv-win)' .` passes.
+- `git diff --check` passes.
+- No new dependencies introduced (the package remains dependency-free at runtime).

@@ -22,6 +22,7 @@ This repo is part of the `agent-harness` multi-repo workspace. Before cross-repo
 | Context/Token-Efficiency Steward | Audit always-loaded instructions, prompt bloat, duplicated guidance, search-noise coverage, and context routing |
 | AI Workflow Architect | Design or audit AI customizations, prompts, agents, instructions, commands, and skills |
 | Repo Janitor | Audit repo bloat, stale docs, deprecated artifacts, and search-context noise |
+| Autonomous Optimization Architect | Adding or reviewing LLM routing, circuit breakers, cost tracking, or shadow-traffic logic; optimizing provider spend, latency, or reliability |
 
 Every steward has a canonical `.github/agents/<name>.agent.md` body, a thin `.kilo/agent/<name>.md` adapter, and a thin `.codex/agents/<name>.toml` adapter. Code Standards Reviewer and PR Review Orchestrator here are adapted specifically for this repo (its own verification commands and rules) rather than synced from `template/`. Backlog Orchestrator, Context/Token-Efficiency Steward, AI Workflow Architect, and Repo Janitor are genuinely generic and are pulled from `template/` via `scripts/sync-steward-pool.ps1 -SourceRepo template -TargetRepo . -Agent backlog-orchestrator,context-token-efficiency,ai-workflow-architect,repo-janitor`; see `.steward-pool.json` for the last-synced source commit — re-run the script (default `-Mode Check`) to detect drift before assuming the local copy is current.
 
