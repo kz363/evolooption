@@ -29,6 +29,12 @@ class AgentSpec:
     prompt: str
     schema: dict[str, Any] = field(default_factory=dict)
     activation: ActivationRule | None = None
+    # Optional fields for multi-agent systems architect discipline (E4 resolved:
+    # only evolution/registry.py constructs AgentSpec, using kwargs + defaults).
+    context_budget: dict[str, Any] | None = None  # e.g., {"max_tokens": 4000}
+    tools_permitted: list[str] | None = None  # subset of allowed tools for this agent
+    fallback: str | None = None  # name of a fallback agent or rule-based handler
+    not_responsible_for: list[str] | None = None  # behaviors this agent does NOT own
 
 
 @dataclass(frozen=True)

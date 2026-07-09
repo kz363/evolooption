@@ -25,8 +25,13 @@ class EvolutionLoop:
     approval_callback: Callable[[str, dict[str, Any]], bool] | None = None
     changed_paths_provider: Callable[[], list[str]] | None = None
     ledger_path: str | Path | None = None
+    # trace_id for observability across the loop (populated from Goal.trace_id)
+    trace_id: str | None = None
 
     def run(self, goal: Goal, state: dict[str, Any]) -> IterationLedger:
+        # Propagate trace_id from goal into iteration results
+        trace_id = goal.trace_id
+        self.trace_id = trace_id
         ledger = IterationLedger.from_path(self.ledger_path)
         synthesizer = self.team_synthesizer or StaticTeamSynthesizer([])
         team = synthesizer.synthesize(goal)
@@ -46,6 +51,7 @@ class EvolutionLoop:
                                 "blocked": True,
                                 "reason": str(error),
                             },
+                            trace_id=trace_id,
                         )
                     )
                     break
@@ -56,6 +62,7 @@ class EvolutionLoop:
                 metric_value=metric_value,
                 success=success,
                 metadata={"team": team},
+                trace_id=trace_id,
             )
             ledger.add(result)
             if success:

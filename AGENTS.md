@@ -12,6 +12,13 @@ This repo is part of the `agent-harness` multi-repo workspace. Before cross-repo
 - `/update-codebase-ledger` — propose durable knowledge updates
 - Treat `../kilocode/` as read-only reference material in this workspace unless explicit owner authorization is provided.
 
+## Cross-cutting engineering best practices
+
+Shared, always-relevant discipline: `_ai-context/engineering-best-practices.md` (minimal change, scope
+self-check, teach-don't-gatekeep review). On-demand skills for task-specific guidance:
+`minimal-change`, `prompt-as-spec`, `sre-and-incident`, `git-workflow`, `docs-standards`
+(`_ai-context/skills/<name>/SKILL.md`). Reference these — do not inline their content here.
+
 ## Steward registry
 
 | Agent | When to invoke |
