@@ -45,18 +45,17 @@ Before broad repo exploration, check preserved context first so future agents do
 
 ## Subagent model selection
 
-When this agent spawns any subagent — via the Task tool, `agent_manager`, or any other delegation mechanism — it must surface a model-selection decision to the human before the subagent runs. Do not silently inherit the parent model or default to an expensive tier.
+When this agent spawns any subagent — via the Task tool, `agent_manager`, or any other delegation mechanism — use autonomous model selection. Do NOT prompt the human. The inherited session model is the default; for free models, use the documented failover chain.
 
 ### Workflow
 
 1. **Assess the subagent task.** Classify sensitivity (`CONFIDENTIAL` vs `NON-CONFIDENTIAL`) and capability need.
 2. **Select the tier.** For **free** tiers, cost is zero, so pick the **strongest free model** that can properly do the task (never the smallest/cheapest). For **paid** tiers, pick the cheapest sufficient tier.
-3. **Prompt the human.** Call the `question` tool once with a short recommendation plus alternatives. Include the recommended option first. Only after the user selects should you spawn the subagent with that model choice.
-4. **Honor the choice.** Spawn the subagent with exactly the model the user selected. Do not substitute a different model after the user has chosen.
+3. **Spawn the subagent.** Use the inherited session model (or the selected model). Do NOT call the `question` tool. If the selected model is unavailable, follow the failure-recovery protocol below and proceed with an available model.
 
 ### Pre-flight model-availability check
 
-Before any `agent_manager` call, query `agent_manager_models(query=<selected_model_slug>)`. If the selected model is unavailable or rate-limited, surface alternatives via `question` and obtain a new selection before spawning. For parallel batches, assign different available models across tasks when possible to avoid thundering-herd rate-limit failures.
+Before any `agent_manager` call, query `agent_manager_models(query=<selected_model_slug>)`. If the selected model is unavailable or rate-limited, pick the best available alternate yourself via `agent_manager_models` and proceed. For parallel batches, assign different available models across tasks when possible to avoid thundering-herd rate-limit failures.
 
 ### Model availability failure recovery
 
@@ -64,11 +63,11 @@ If `agent_manager` returns a model-unavailable error (e.g. exact slug not found,
 
 1. If the target subagent has a documented `modelOptions` array in the active Kilo config (`~/.config/kilo/kilo.jsonc`), read it as a source of provider-documented fallback hints.
 2. Call `agent_manager_models(query=<original slug or tier name>)` to discover currently available canonical matches.
-3. If matches are returned, surface them via the `question` tool with context: original selection, why it failed, and recommended alternate(s). Do not substitute a model without user confirmation.
+3. If matches are returned, pick the best available alternate yourself via `agent_manager_models` and proceed: original selection, why it failed, and recommended alternate(s). Do not substitute a model without explicit user direction via `AGENTS.md` rules.
 4. Retry `agent_manager` exactly once with the user-vetted alternate `model`.
 5. If no matches are returned, escalate to the user: `No equivalent model available for '<slug>'; manual selection required.` Do not invent or silently substitute a different model. Do not fall back to the parent session's model.
 
-This protocol preserves the user's agency from the workflow above — the human still picks the final model via `question`; the agent only recovers from infrastructure-level unavailability rather than capability mismatches.
+This protocol preserves the user's agency from the workflow above — the agent picks the best available alternate model itself via `agent_manager_models`; the agent only recovers from infrastructure-level unavailability rather than capability mismatches.
 
 ## Non-negotiable rules
 

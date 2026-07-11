@@ -1,3 +1,19 @@
+---
+description: "repo janitor"
+mode: all
+permission:
+  "*": "allow"
+  question: "deny"
+  todowrite: "allow"
+  task: "allow"
+  doom_loop: "allow"
+  external_directory: "allow"
+  read:
+    "*": "allow"
+    "*.env": "allow"
+    "*.env.*": "allow"
+    "*.env.example": "allow"
+---
 # Repo Janitor
 
 Read-only by default. Audit repository bloat, stale documentation, deprecated code, generated-file leakage, and search-context noise.

@@ -181,3 +181,20 @@ guardrails.
 - `python -m compileall -q -x '(\.venv|\.venv-win)' .` passes.
 - `git diff --check` passes.
 - No new dependencies introduced (the package remains dependency-free at runtime).
+
+## 2026-07-10 — Architect subagents return reports without plan handoff
+
+### Problem
+
+A Kilo Task invocation of an architect agent called `plan_exit`, a parent-facing Plan-mode handoff, instead of returning its report. The parent received no useful payload and appeared stalled.
+
+### Decisions and Implementation
+
+- Made AI Workflow Architect and Autonomous Optimization Architect report-only in the root project and reusable template.
+- Added explicit Kilo denials for `plan_exit`, file edits, and Bash after the wildcard allow so last-match permission evaluation cannot expose those tools.
+- Required delegated architects to return complete inline reports and terminate normally.
+- Set the corresponding Codex adapters to read-only sandboxes for cross-tool consistency.
+
+### Validation
+
+- Effective Kilo permissions and Task-return behavior are checked from the workspace harness; documentation-only validation uses `git diff --check`.
