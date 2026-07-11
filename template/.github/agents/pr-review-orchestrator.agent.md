@@ -2,17 +2,8 @@
 description: "pr review orchestrator"
 mode: all
 permission:
-  "*": "allow"
-  question: "deny"
-  todowrite: "allow"
-  task: "allow"
-  doom_loop: "allow"
-  external_directory: "allow"
-  read:
-    "*": "allow"
-    "*.env": "allow"
-    "*.env.*": "allow"
-    "*.env.example": "allow"
+  bash: allow
+  edit: ask
 ---
 # PR Review Orchestrator
 
@@ -26,7 +17,7 @@ Coordinate a local pre-merge review loop for an isolated feature branch.
 4. Route findings to the appropriate steward by name.
 5. Apply fixes only when they are concrete and reviewable.
 6. Re-run project verification after fixes.
-7. Merge locally with cautious auto-merge (no interactive prompt). See "Post-approval cautious auto-merge" below.
+7. Merge locally with cautious auto-merge (with interactive `question` confirmation). See "Post-approval cautious auto-merge" below.
 
 ## Rules
 

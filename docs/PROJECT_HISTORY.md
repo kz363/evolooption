@@ -186,7 +186,7 @@ guardrails.
 
 ### Problem
 
-A Kilo Task invocation of an architect agent called `plan_exit`, a parent-facing Plan-mode handoff, instead of returning its report. The parent received no useful payload and appeared stalled.
+A Kilo Task invocation of an architect agent called `plan_exit`, a parent-facing Plan-mode handoff. The parent received no useful payload and appeared stalled.
 
 ### Decisions and Implementation
 
@@ -194,6 +194,7 @@ A Kilo Task invocation of an architect agent called `plan_exit`, a parent-facing
 - Added explicit Kilo denials for `plan_exit`, file edits, and Bash after the wildcard allow so last-match permission evaluation cannot expose those tools.
 - Required delegated architects to return complete inline reports and terminate normally.
 - Set the corresponding Codex adapters to read-only sandboxes for cross-tool consistency.
+- Kept this scoped to the architect persona; other stewards (Backlog Orchestrator, Merge Orchestrator, Code Standards Reviewer, PR Review Orchestrator, etc.) keep their original narrow `bash: allow` + `edit: ask` permissions and require interactive `question` confirmation before any batch launch or merge into `main`. A separate planning pass attempted to broaden steward permissions to a wildcard `*` allow plus `external_directory: allow` and to auto-merge branches into `main` without human confirmation; that change is being reverted and the original narrow permissions/human-confirmation contract remains in force.
 
 ### Validation
 

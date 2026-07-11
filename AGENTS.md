@@ -45,17 +45,17 @@ Before broad repo exploration, check preserved context first so future agents do
 
 ## Subagent model selection
 
-When this agent spawns any subagent — via the Task tool, `agent_manager`, or any other delegation mechanism — use autonomous model selection. Do NOT prompt the human. The inherited session model is the default; for free models, use the documented failover chain.
+When this agent spawns any subagent — via the Task tool, `agent_manager`, or any other delegation mechanism — assess the sensitivity and capability, present a recommendation to the human via the `question` tool, and proceed only after the user picks a model.
 
 ### Workflow
 
 1. **Assess the subagent task.** Classify sensitivity (`CONFIDENTIAL` vs `NON-CONFIDENTIAL`) and capability need.
 2. **Select the tier.** For **free** tiers, cost is zero, so pick the **strongest free model** that can properly do the task (never the smallest/cheapest). For **paid** tiers, pick the cheapest sufficient tier.
-3. **Spawn the subagent.** Use the inherited session model (or the selected model). Do NOT call the `question` tool. If the selected model is unavailable, follow the failure-recovery protocol below and proceed with an available model.
+3. **Ask the human.** Call the `question` tool once with your recommendation; spawn the subagent only after the user selects. Never silently default to a model.
 
 ### Pre-flight model-availability check
 
-Before any `agent_manager` call, query `agent_manager_models(query=<selected_model_slug>)`. If the selected model is unavailable or rate-limited, pick the best available alternate yourself via `agent_manager_models` and proceed. For parallel batches, assign different available models across tasks when possible to avoid thundering-herd rate-limit failures.
+Before any `agent_manager` call, query `agent_manager_models(query=<selected_model_slug>)`. If the selected model is unavailable or rate-limited, surface matches to the human via `question` and retry exactly once with the user-vetted alternate `model`. For parallel batches, assign different available models across tasks when possible to avoid thundering-herd rate-limit failures.
 
 ### Model availability failure recovery
 
@@ -63,11 +63,10 @@ If `agent_manager` returns a model-unavailable error (e.g. exact slug not found,
 
 1. If the target subagent has a documented `modelOptions` array in the active Kilo config (`~/.config/kilo/kilo.jsonc`), read it as a source of provider-documented fallback hints.
 2. Call `agent_manager_models(query=<original slug or tier name>)` to discover currently available canonical matches.
-3. If matches are returned, pick the best available alternate yourself via `agent_manager_models` and proceed: original selection, why it failed, and recommended alternate(s). Do not substitute a model without explicit user direction via `AGENTS.md` rules.
-4. Retry `agent_manager` exactly once with the user-vetted alternate `model`.
-5. If no matches are returned, escalate to the user: `No equivalent model available for '<slug>'; manual selection required.` Do not invent or silently substitute a different model. Do not fall back to the parent session's model.
+3. Surface matches to the user via `question`; retry exactly once with the user-vetted alternate `model`.
+4. If no matches are returned, escalate to the user: `No equivalent model available for '<slug>'; manual selection required.` Do not invent or silently substitute a different model. Do not fall back to the parent session's model.
 
-This protocol preserves the user's agency from the workflow above — the agent picks the best available alternate model itself via `agent_manager_models`; the agent only recovers from infrastructure-level unavailability rather than capability mismatches.
+This protocol preserves human agency over subagent model selection — the agent surfaces matches; the user picks. The agent only recovers from infrastructure-level unavailability rather than capability mismatches.
 
 ## Non-negotiable rules
 

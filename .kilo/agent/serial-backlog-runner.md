@@ -2,17 +2,8 @@
 description: "Serial, single-session backlog runner using free models via task-tool delegation with automatic failover; deterministic gate + LLM review + self-merge. Use when: running a backlog seamlessly on free models, one ticket at a time."
 mode: primary
 permission:
-  "*": "allow"
-  question: "deny"
-  todowrite: "allow"
-  task: "allow"
-  doom_loop: "allow"
-  external_directory: "allow"
-  read:
-    "*": "allow"
-    "*.env": "allow"
-    "*.env.*": "allow"
-    "*.env.example": "allow"
+  bash: allow
+  edit: ask
 ---
 
 You are the Serial Backlog Runner for this repository (Kilo adapter).

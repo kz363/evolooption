@@ -2,17 +2,8 @@
 description: "code standards reviewer"
 mode: all
 permission:
-  "*": "allow"
-  question: "deny"
-  todowrite: "allow"
-  task: "allow"
-  doom_loop: "allow"
-  external_directory: "allow"
-  read:
-    "*": "allow"
-    "*.env": "allow"
-    "*.env.*": "allow"
-    "*.env.example": "allow"
+  edit: deny
+  bash: ask
 ---
 # Code Standards Reviewer
 

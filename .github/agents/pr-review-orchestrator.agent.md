@@ -2,17 +2,8 @@
 description: "pr review orchestrator"
 mode: all
 permission:
-  "*": "allow"
-  question: "deny"
-  todowrite: "allow"
-  task: "allow"
-  doom_loop: "allow"
-  external_directory: "allow"
-  read:
-    "*": "allow"
-    "*.env": "allow"
-    "*.env.*": "allow"
-    "*.env.example": "allow"
+  bash: allow
+  edit: ask
 ---
 # PR Review Orchestrator
 
@@ -83,7 +74,7 @@ Confirm: branch clean and committed; verification green — run the full verific
 
 ## Post-approval interactive merge
 
-**Post-approval cautious auto-merge (no interactive prompt):** after reporting APPROVED, perform a CAUTIOUS auto-merge. First verify: (a) the working tree is clean (`git status --porcelain` empty), (b) you are on the correct feature branch, (c) the detected topology and that the base branch is clean. If any precondition fails or the state is unexpected or dirty, **ABORT and report** (do not merge). Otherwise run the merge-into-`main` command for the detected topology (`git -C <main-worktree-path> merge --no-ff <branch> -m "Merge '<branch>' into main"` for Topology A; `git checkout main` -> `git merge --no-ff <branch> -m "..."` -> `git checkout <branch>` for Topology B). If it conflicts, abort the in-progress merge and enter **Local conflict resolution**.
+**Post-approval cautious auto-merge (with interactive `question` confirmation):** after reporting APPROVED, call the `question` tool once with: "Approve and merge `<branch>` into `main`?" Options: Yes (merge) / No (do not merge). Wait for the user's answer. On no → do not merge. On yes → perform a CAUTIOUS auto-merge. First verify: (a) the working tree is clean (`git status --porcelain` empty), (b) you are on the correct feature branch, (c) the detected topology and that the base branch is clean. If any precondition fails or the state is unexpected or dirty, **ABORT and report** (do not merge). Otherwise run the merge-into-`main` command for the detected topology (`git -C <main-worktree-path> merge --no-ff <branch> -m "Merge '<branch>' into main"` for Topology A; `git checkout main` -> `git merge --no-ff <branch> -m "..."` -> `git checkout <branch>` for Topology B). If it conflicts, abort the in-progress merge and enter **Local conflict resolution**.
 
 ### Local conflict resolution
 
@@ -100,7 +91,7 @@ On success: **"MERGED: `<branch-name>` is now in `main`."** with merge commit SH
 
 - Never `git push`, call `gh`, or touch a remote PR.
 - Never resolve conflicts on `main` directly — only on the feature branch, after aborting the in-progress merge.
-- Never merge into `main` except through the cautious auto-merge step below.
+- Never merge into `main` except through the cautious auto-merge step below, which requires an interactive `question` confirmation.
 - Never perform the review yourself — Role B is always Code Standards Reviewer.
 - Never fake verification results; state explicitly when a command is skipped and why.
 - Never delete or force-remove the feature worktree.
