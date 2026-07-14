@@ -14,3 +14,11 @@ state/
 .env
 .env.*
 !.env.example
+.agentic-local/
+.kilo/
+.github/agents/
+.github/commands/
+.github/skills/
+.codex/agents/
+.codex/commands/
+.codex/skills/
