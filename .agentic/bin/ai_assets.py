@@ -211,6 +211,34 @@ def _validate_against_schema(
             if minimum is not None and isinstance(value, int) and value < minimum:
                 errors.append(f"{schema_id}.{key}: {value} below minimum {minimum}")
 
+            # Recurse into nested object properties
+            if prop_type == "object" and isinstance(value, dict) and "properties" in prop_schema:
+                errors.extend(
+                    f"{schema_id}.{key}.{sub}"
+                    for sub in _validate_against_schema(value, prop_schema, f"{schema_id}.{key}")
+                )
+
+            # Validate array items against the items schema
+            if prop_type == "array" and isinstance(value, list) and "items" in prop_schema:
+                items_schema = prop_schema["items"]
+                for idx, item in enumerate(value):
+                    if items_schema.get("type") == "string" and not isinstance(item, str):
+                        errors.append(f"{schema_id}.{key}[{idx}]: expected string, got {type(item).__name__}")
+                    elif items_schema.get("type") == "integer" and not isinstance(item, int):
+                        errors.append(f"{schema_id}.{key}[{idx}]: expected integer, got {type(item).__name__}")
+                    elif items_schema.get("type") == "object" and isinstance(item, dict):
+                        errors.extend(
+                            f"{schema_id}.{key}[{idx}].{sub}"
+                            for sub in _validate_against_schema(item, items_schema, f"{schema_id}.{key}[{idx}]")
+                        )
+                    elif items_schema.get("type") == "object" and not isinstance(item, dict):
+                        errors.append(f"{schema_id}.{key}[{idx}]: expected object, got {type(item).__name__}")
+
+            # Check minItems for arrays
+            min_items = prop_schema.get("minItems")
+            if min_items is not None and isinstance(value, list) and len(value) < min_items:
+                errors.append(f"{schema_id}.{key}: array has {len(value)} items, min {min_items}")
+
     if not schema.get("additionalProperties", True) and isinstance(instance, dict):
         allowed_keys = set(props.keys())
         extra_keys = set(instance.keys()) - allowed_keys
