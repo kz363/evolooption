@@ -33,6 +33,24 @@ self-check, teach-don't-gatekeep review). On-demand skills for task-specific gui
 
 Every steward has a canonical `.github/agents/<name>.agent.md` body, a thin `.kilo/agent/<name>.md` adapter, and a thin `.codex/agents/<name>.toml` adapter. Code Standards Reviewer and PR Review Orchestrator here are adapted specifically for this repo (its own verification commands and rules) rather than synced from `template/`. Backlog Orchestrator, Context/Token-Efficiency Steward, AI Workflow Architect, and Repo Janitor are genuinely generic and are pulled from `template/` via `scripts/sync-steward-pool.ps1 -SourceRepo template -TargetRepo . -Agent backlog-orchestrator,context-token-efficiency,ai-workflow-architect,repo-janitor`; see `.steward-pool.json` for the last-synced source commit — re-run the script (default `-Mode Check`) to detect drift before assuming the local copy is current.
 
+## Manifest registry and ownership
+
+The `.agentic/manifest.json` is the declarative registry for this repo's agents, commands, skills, and eval suites. Each entry declares an `owner` field:
+
+- `"evolooption:domain"` — owned and maintained by the evolooption framework; consumers should treat these as canonical sources.
+- `"user:domain"` — owned by the consuming project; adapted from template stubs.
+
+Framework agents are registered here with `"owner": "evolooption:domain"` and pulled from `agents/` bodies. Consuming repos start from `template/.agentic/manifest.json` (seed) and populate entries with `"owner": "user:domain"`.
+
+### Schema and validation
+
+- `evolooption.schemas` — JSON Schema definitions for agent, command, skill, eval-suite entries, and the top-level manifest. Provides `validate_manifest()` and per-entry validators. Offline-safe and dependency-free.
+- `evolooption.registry` — Typed dataclass containers (`Manifest`, `AgentEntry`, `CommandEntry`, `SkillEntry`, `EvalSuiteEntry`) and `load_manifest()` that combines loading with schema validation.
+
+### Eval suites
+
+Agents declare `eval_suites` (e.g. `eval-offline`, `regression-eval-suite`) in their manifest entries. The eval-suite section of the manifest lists each suite with `min_cases` and `suite_path`. The `evolooption.registry.Manifest.list_eval_suites_for_agent()` cross-references an agent's declared suites against the registered eval-suite catalog. The `evolooption.evolution.eval` module handles execution and promotion gating.
+
 ## Context preservation and discovery reuse
 
 Before broad repo exploration, check preserved context first so future agents do not repeatedly rediscover the same facts:
