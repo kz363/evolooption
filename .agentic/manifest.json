@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0.0",
+  "manifest_version": "1.0.0",
+  "generated_by": "ADAPTER-002",
+  "canonical_layer_version": "1.0.0",
+  "agents": [
+    {
+      "id": "serial-backlog-runner",
+      "owner": "evolooption:domain",
+      "title": "Serial Backlog Runner",
+      "body_path": "agents/serial-backlog-runner.md",
+      "version": "1.0.0",
+      "targets": ["kilo", "github", "codex"],
+      "permission_profile": "implementer",
+      "trust_class": "mutating",
+      "data_class": "internal",
+      "disposition": "retain",
+      "mode": "implementer",
+      "role_mode": "implementer",
+      "scope": "backlog-execution",
+      "risk_class": "medium",
+      "budgets": {
+        "context_bytes": 12288,
+        "max_files_changed": 10
+      },
+      "eval_suites": ["eval-offline", "regression-eval-suite"],
+      "stop_conditions": [
+        "All edits stay inside the assigned worktree and branch.",
+        "Do not merge into main; return a pointer to the candidate commit."
+      ],
+      "skills": ["minimal-change", "git-workflow"]
+    },
+    {
+      "id": "backlog-orchestrator",
+      "owner": "evolooption:domain",
+      "title": "Backlog Orchestrator",
+      "body_path": "agents/backlog-orchestrator.md",
+      "version": "1.0.0",
+      "targets": ["kilo", "github", "codex"],
+      "permission_profile": "orchestrator",
+      "trust_class": "mutating",
+      "data_class": "internal",
+      "disposition": "retain",
+      "mode": "orchestrator",
+      "role_mode": "orchestrator",
+      "scope": "orchestration",
+      "risk_class": "medium",
+      "budgets": {
+        "context_bytes": 12288,
+        "max_files_changed": 10
+      },
+      "eval_suites": ["eval-offline", "regression-eval-suite"],
+      "stop_conditions": [
+        "Plan once and exit; never run a polling loop or state machine.",
+        "Delegate execution to a worktree-implementer; do not edit source directly."
+      ],
+      "skills": ["git-workflow"]
+    }
+  ],
+  "commands": [],
+  "skills": []
+}
