@@ -1,0 +1,36 @@
+# Starter CODEOWNERS for a consuming project.
+# See evolooption's .github/CODEOWNERS for the reference implementation.
+#
+# GitHub CODEOWNERS syntax: <pattern> @<username|team> [@<username|team> ...]
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Canonical foundation (do not modify)
+foundation.bundle.json                              @your-team
+foundation.lock.json                                @your-team
+.agentic/generated-index.json                       @your-team
+.agentic/bin/                                       @your-team
+.agentic/ownership.json                             @your-team
+
+# Your project's manifest registry
+.agentic/manifest.json                              @your-team
+
+# Your project's agent bodies
+agents/                                             @your-team
+.github/agents/                                     @your-team
+
+# Runtime adapters (generated, never hand-edited)
+.kilo/                                              @your-team
+.codex/                                             @your-team
+
+# Your project's source code
+src/                                                @your-team
+
+# Documentation
+docs/                                               @your-team
+README.md                                           @your-team
+
+# CI and verification
+.github/workflows/                                  @your-team
+
+# Tests
+tests/                                              @your-team

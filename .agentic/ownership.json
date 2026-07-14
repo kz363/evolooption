@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0.0",
+  "generated_by": "GOV-001-EVOLO",
+  "description": "Deterministic ownership declarations for evolooption framework and template. Each domain declares its ownership scope, contact, and canonical source for runtime-agnostic agentic assets.",
+  "domains": {
+    "agentic-ai:canonical": {
+      "description": "Canonical upstream source of shared, runtime-neutral agentic-AI semantics. Owns the foundation bundle, principles, and playbooks that every runtime adapter projects from.",
+      "canonical_source": "_ai-context/agentic-ai/",
+      "contact": "framework-maintainers",
+      "files_owned": [
+        "foundation.bundle.json",
+        "foundation.lock.json",
+        ".agentic/generated-index.json",
+        ".agentic/bin/ai_assets.py"
+      ]
+    },
+    "evolooption:domain": {
+      "description": "Domain-agnostic framework and starter template maintained by the evolooption project. Owns the Python package, steward manifest, template seed, and runtime adapters.",
+      "canonical_source": ".",
+      "contact": "framework-maintainers",
+      "files_owned": [
+        "evolooption/**",
+        ".agentic/manifest.json",
+        "agents/**",
+        "template/**",
+        "scripts/**",
+        ".github/agents/**",
+        ".github/workflows/verify.yml",
+        ".kilo/agent/**",
+        ".codex/agents/**",
+        "docs/**"
+      ],
+      "protected_surface": {
+        "note": "These paths must never be modified by the evolution loop; declared for ProtectedSurface enforcement.",
+        "globs": [
+          "evolooption/metrics/**",
+          "evolooption/policy/protected*",
+          "evolooption/policy/autonomy.py",
+          "tests/test_loop_phase3.py"
+        ],
+        "baseline_tests": [
+          "tests/test_loop_phase3.py"
+        ]
+      }
+    },
+    "user:domain": {
+      "description": "Consumer project domain. Consuming repos replace stub entries in template/.agentic/manifest.json with user:domain ownership and add their own agents, commands, skills, and eval suites.",
+      "canonical_source": "template/.agentic/ownership.json",
+      "contact": "project-maintainers",
+      "files_owned": []
+    }
+  },
+  "validation": {
+    "note": "Every manifest entry (.agentic/manifest.json) must declare an owner from one of the domains above. Scripts/ai_assets.py check validates this invariant.",
+    "allowed_owners": [
+      "agentic-ai:canonical",
+      "evolooption:domain",
+      "user:domain"
+    ]
+  }
+}

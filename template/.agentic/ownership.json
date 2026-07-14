@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0.0",
+  "generated_by": "evolooption template seed",
+  "description": "Starter ownership declarations for a consuming project. Replace user:domain entries with your project's ownership declarations. See evolooption's .agentic/ownership.json for the full reference.",
+  "domains": {
+    "agentic-ai:canonical": {
+      "description": "Canonical upstream source of shared, runtime-neutral agentic-AI semantics. Do not modify entries sourced from the canonical layer.",
+      "canonical_source": "_ai-context/agentic-ai/",
+      "contact": "upstream-maintainers",
+      "files_owned": [
+        "foundation.bundle.json",
+        "foundation.lock.json",
+        ".agentic/generated-index.json",
+        ".agentic/bin/ai_assets.py"
+      ]
+    },
+    "user:domain": {
+      "description": "Your project's domain. Replace this placeholder with your actual domain name and add your project-specific agents, commands, skills, and eval suites to .agentic/manifest.json.",
+      "canonical_source": ".agentic/ownership.json",
+      "contact": "your-team",
+      "files_owned": []
+    }
+  },
+  "validation": {
+    "allowed_owners": [
+      "agentic-ai:canonical",
+      "user:domain"
+    ]
+  }
+}
