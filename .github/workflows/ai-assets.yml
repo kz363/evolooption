@@ -1,0 +1,37 @@
+name: ai-assets
+
+on:
+  pull_request:
+    paths:
+      - "foundation.bundle.json"
+      - "foundation.lock.json"
+      - ".agentic/**"
+      - ".kilo/**"
+      - ".github/workflows/ai-assets.yml"
+  push:
+    branches: [main]
+    paths:
+      - "foundation.bundle.json"
+      - "foundation.lock.json"
+      - ".agentic/**"
+      - ".kilo/**"
+      - ".github/workflows/ai-assets.yml"
+
+jobs:
+  ai-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate foundation bundle
+        run: python .agentic/bin/ai_assets.py check
+      - name: Lint AI assets
+        run: python .agentic/bin/ai_assets.py lint
+      - name: Validate manifest
+        run: python .agentic/bin/ai_assets.py validate
+      - name: Install test deps
+        run: python -m pip install pytest
+      - name: Run validation tests
+        run: python -m pytest tests/test_ai_assets_validation.py -v
