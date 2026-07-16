@@ -1,15 +1,18 @@
 {
   "entries": {
     "kilo-global/agent/context-token-efficiency.md": "c2253cefba3ee4c2c35b7bfeeb103ec092ec7ab562dc598d984ad743d9460b3b",
+    "kilo-global/agent/final-design-gate.md": "b9b55a58dd3d93e196bffd5571e0960f8080f1b89d6cf14dd134013c694684cb",
     "kilo-global/agent/investigator.md": "0f80eb8c48ff71df022734e2e51bbb75e33256425c9efc89e3a0778dc09dc08b",
-    "kilo-global/agent/planner-coordinator.md": "266b1c82ab2840a53ebf4a4ff1225dff2028b484c1610425c7b9de585a8cc82c",
+    "kilo-global/agent/planner-coordinator.md": "b8f3c9cf3d9b859f6442e932f1bc3dd54d88de11155dd07fca3c0400cf3061a5",
     "kilo-global/agent/repo-janitor.md": "0d35c7eb0e5f293c7bbf4084650fceeb0c9e16544b128b6707a05b5b6cca0466",
     "kilo-global/agent/reviewer.md": "8b5461e01a18a61f64f0caeb8050ebed40d64710c24a365d3e77ecf58db0026c",
     "kilo-global/agent/specialist-reviewer.md": "f190e1fd758495129006d47aa512e6d9d14065c228c08d343c9e4270a0330992",
-    "kilo-global/agent/worktree-implementer.md": "4cef93d0e405fa5185c71714e6950888c859db3ffc0be31b51362620948c542c",
+    "kilo-global/agent/worktree-implementer.md": "39c1ede58fdce9064949fdbb6a6ab2b377dbaa44cb9868d293ae1b148141b846",
+    "kilo-global/commands/plan-large-change.md": "03a492719fc43536639327ceba9527772b326b52f365f803a39796d15d7c2612",
     "kilo-global/commands/regenerate-adapters.md": "60a0ccd7689bf37546385912bcc8c7332d161da4846e9a9b47de09be76493158",
+    "kilo-global/commands/status.md": "e0c64b1bd251ed4141d3db99c52331ce599085ae4189de8b0557dae272926db3",
     "kilo-global/commands/verify-adapter-drift.md": "16530e9f30cddb860e01400dfb03305b4a6f37f02e36755445803ab36dd6db37",
-    "kilo-global/skills/agentic-ai-foundation.md": "9d77251a68b9ddc43b0ddc6d7f7c37c1c394160bf6e79ea29f3c9e2f7b505b00",
+    "kilo-global/skills/agentic-ai-foundation.md": "95aac5f56feeae78c04a39ba9888915f2b3a380a52412d64e5a77461bc851627",
     "kilo-global/skills/docs-standards.md": "b179ac51e884f1c2825d6815b20eb918c076eae0c6bf7b3e4701e0fdb02dd5c5",
     "kilo-global/skills/git-workflow.md": "92b56e9a0c1edfdd83a75801c7fe3a1de52a2db7fe20fa4fedcb8440b3e869b2",
     "kilo-global/skills/ledger-steward.md": "2e2128e72c024930f3189ee1309b8d4b5e9437a98fa6ee572ccc0473c5bbd6bb",
@@ -18,7 +21,7 @@
     "kilo-global/skills/sre-and-incident.md": "3254fa5eec4c61a931acea050aabc410ce482d78b13e2323db9b67424cb22370",
     "kilo-global/skills/workspace-orientation.md": "5128438ce07ce01453b13603384e0fa4dea4bc6e60ebf74d5b547edb72c04de1"
   },
-  "foundation_version": "1.0.0+42e519bcff97",
+  "foundation_version": "1.1.0+df17a801e00b",
   "schema_version": "1.0.0",
-  "source_digest": "42e519bcff97905ee90ca4a0868343fdf744ae1280b3369dbc5e4d7b71d2d18f"
+  "source_digest": "df17a801e00bda4a3754660908a70e4863077ef18496b0564b580ee1a3e467ea"
 }

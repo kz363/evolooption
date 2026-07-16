@@ -3,8 +3,8 @@ name: ai-assets
 on:
   pull_request:
     paths:
-      - "foundation.bundle.json"
-      - "foundation.lock.json"
+      - ".agentic/foundation.bundle.json"
+      - ".agentic/foundation.lock.json"
       - ".agentic/**"
       - ".kilo/**"
       - ".github/workflows/ai-assets.yml"
@@ -12,8 +12,8 @@ on:
   push:
     branches: [main]
     paths:
-      - "foundation.bundle.json"
-      - "foundation.lock.json"
+      - ".agentic/foundation.bundle.json"
+      - ".agentic/foundation.lock.json"
       - ".agentic/**"
       - ".kilo/**"
       - ".github/workflows/ai-assets.yml"

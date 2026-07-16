@@ -12,8 +12,8 @@ evolooption/                                               @framework-maintainer
 .agentic/ownership.json                                    @framework-maintainers
 
 # Foundation bundle and lock (canonical source: agentic-ai)
-foundation.bundle.json                                     @framework-maintainers
-foundation.lock.json                                       @framework-maintainers
+.agentic/foundation.bundle.json                             @framework-maintainers
+.agentic/foundation.lock.json                               @framework-maintainers
 .agentic/generated-index.json                              @framework-maintainers
 .agentic/bin/                                              @framework-maintainers
 

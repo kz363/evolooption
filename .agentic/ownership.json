@@ -7,12 +7,12 @@
       "description": "Canonical upstream source of shared, runtime-neutral agentic-AI semantics. Owns the foundation bundle, principles, and playbooks that every runtime adapter projects from.",
       "canonical_source": "_ai-context/agentic-ai/",
       "contact": "framework-maintainers",
-      "files_owned": [
-        "foundation.bundle.json",
-        "foundation.lock.json",
-        ".agentic/generated-index.json",
-        ".agentic/bin/ai_assets.py"
-      ]
+        "files_owned": [
+          ".agentic/foundation.bundle.json",
+          ".agentic/foundation.lock.json",
+          ".agentic/generated-index.json",
+          ".agentic/bin/ai_assets.py"
+        ]
     },
     "evolooption:domain": {
       "description": "Domain-agnostic framework and starter template maintained by the evolooption project. Owns the Python package, steward manifest, template seed, and runtime adapters.",
