@@ -199,3 +199,29 @@ A Kilo Task invocation of an architect agent called `plan_exit`, a parent-facing
 ### Validation
 
 - Effective Kilo permissions and Task-return behavior are checked from the workspace harness; documentation-only validation uses `git diff --check`.
+
+## 2026-07-17 — Retire and freeze the generic runtime framework
+
+### Decisions and Implementation
+
+- Published retirement status in README, current-state, deprecation, package metadata, and
+  active template-sync documentation. The repository accepts no new consumers or features.
+- Added the single `RetiredFrameworkError` boundary. Evaluation execution, scaffolding,
+  dynamic-registry writes, and proposed loop actions now fail closed without side effects;
+  promotion returns an explicit unavailable result.
+- Changed Git path discovery to include staged, unstaged, and untracked paths and raise on
+  enumeration failure instead of returning an empty safe set.
+- Marked repository/template steward manifests and guidance historical/deprecated while
+  retaining source and Git history for audit.
+
+### Validation
+
+- `tests/test_evolution_phase2.py tests/test_loop_phase3.py tests/test_policy_phase3.py tests/test_phase0_scaffold.py` — 35 passed.
+- Changed-file `ruff check` — passed.
+- The full-repository lint still has pre-existing violations in untouched `registry`,
+  `schemas`, `policy.autonomy`, and related files; no new runtime dependency was added.
+
+### Review remediation
+
+- Corrected the top-level `AGENTS.md` status wording so the repository consistently identifies
+  itself as retired/frozen historical source rather than a reusable framework.

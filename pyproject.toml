@@ -5,10 +5,13 @@ build-backend = "hatchling.build"
 [project]
 name = "evolooption"
 version = "0.1.0"
-description = "Domain-agnostic self-learning multi-agent framework and starter template."
+description = "Retired and frozen historical domain-agnostic agent framework."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
+classifiers = [
+  "Development Status :: 7 - Inactive",
+]
 authors = [
   { name = "Evolooption contributors" }
 ]

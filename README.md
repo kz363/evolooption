@@ -1,14 +1,22 @@
 # evolooption
 
-`evolooption` is a domain-agnostic, self-learning multi-agent framework with a clonable starter template.
-Given a goal and a metric, it synthesizes a team of agents, iterates toward the target, learns from failures through postmortems and proposals, and can evolve its own configuration under an explicit autonomy policy.
-It ships no real-world action tools by design; consuming projects supply their own domain actions.
+`evolooption` is a retired, historical domain-agnostic agent framework and starter template.
+It is no longer an active runtime or supported consumer package. The source is retained for
+audit and migration history only.
 
-Phases 0 through 4 are currently implemented: the package scaffold, a provider-agnostic LLM abstraction, evolution primitives, loop orchestration and policy enforcement, and a steward template for downstream repositories.
+> **Retiring and frozen.** This repository accepts no new consumers or features. Its generic
+> mutation, promotion, scaffolding, and dynamic-registry entry points are unavailable. The
+> source and history remain available for audit; a future real consumer requires a new,
+> evidence-backed architecture decision.
 
-## Core concepts
+Phases 0 through 4 describe the historical implementation: package scaffolding, a provider-
+agnostic LLM abstraction, evolution primitives, loop orchestration, policy enforcement, and
+steward-template assets. Those surfaces are frozen and unavailable for new use.
 
-The framework is built around a small set of composable primitives.
+## Historical core concepts
+
+The retired framework was built around the following composable primitives. This table is a
+historical inventory, not a supported API contract.
 
 | Concept | Responsibility | Type |
 | --- | --- | --- |
@@ -24,7 +32,7 @@ The framework is built around a small set of composable primitives.
 | ProtectedSurface | Set of paths, modules, and baseline tests the loop must not modify | `evolooption.policy.ProtectedSurface` |
 | ActionPolicy | Permission, spend, and rate gate applied to tool execution | `evolooption.execution.ActionPolicy` |
 
-## Design principles and trust boundary
+## Historical design principles and trust boundary
 
 The framework enforces a strict ownership boundary between deterministic Python code and LLM output:
 
@@ -36,7 +44,7 @@ The framework enforces a strict ownership boundary between deterministic Python 
 
 Projects remain domain-owners of their tools, metrics, and protected paths. The framework never ships built-in real-world actions.
 
-## Package map
+## Historical package map
 
 | Subpackage | Responsibility |
 | --- | --- |
@@ -52,7 +60,7 @@ Projects remain domain-owners of their tools, metrics, and protected paths. The 
 
 Deeper architecture guidance lives in `docs/ARCHITECTURE.md` and `docs/TECHNICAL_DESIGN.md`.
 
-## Installation
+## Historical installation reference
 
 Python 3.10 or newer is required.
 The package has **no runtime dependencies**; adapters use only the Python standard library.
@@ -69,9 +77,10 @@ pip install -e ".[dev]"
 
 Dev extras currently provide `pytest` and `ruff`.
 
-## Quickstart: run the loop offline
+## Historical quickstart (not supported)
 
-The evolution loop can run fully offline without any LLM configuration.
+The historical evolution-loop example is retained for audit only and must not be used as a
+supported integration path.
 The example below uses fakes modelled on `tests/test_loop_phase3.py`, which is the canonical reference implementation.
 
 ```python
@@ -122,7 +131,7 @@ print(ledger.latest().success)
 
 This example is covered by the offline test suite and does not make any network calls.
 
-## Configuring LLM providers
+## Historical provider configuration reference
 
 LLM configuration is optional; the loop itself does not require any external model.
 When you do want LLM-backed agents, configure providers with the setup CLI.
@@ -168,7 +177,7 @@ planner_client = OpenAICompatibleClient(
 
 `OllamaClient` targets the default local Ollama endpoint; `OpenAICompatibleClient` requires `base_url` and reads the API key from the environment variable specified by `api_key_env`, defaulting to `OPENAI_API_KEY`.
 
-## Extending evolooption for your domain
+## Historical extension examples (not supported)
 
 ### Implement a `MetricEvaluator`
 

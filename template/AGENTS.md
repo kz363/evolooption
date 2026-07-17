@@ -1,6 +1,7 @@
 # Template Agent Rules
 
-This project uses `evolooption` steward conventions.
+This directory contains frozen historical steward assets. It is not a supported source
+for new consumers or framework features.
 
 ## Steward registry
 
@@ -22,7 +23,9 @@ Project-specific reviewers are declared in this file and referenced by name inst
 
 ## Shared steward pool
 
-Agents that are genuinely domain-agnostic (currently: Backlog Orchestrator) live here as the canonical source and can be pulled into a consuming repo with `scripts/sync-steward-pool.ps1` (in the `evolooption` repo root, run against this `template/` folder as the source). Agents that have diverged into a project-specific elaboration (e.g. a repo's own PR Review Orchestrator with repo-specific verification commands and delegation chains) are **not** pool-synced — they are forked once from the template stub and then maintained locally. Re-running the sync script only ever touches the agents named in its `-Agent` argument and reports a diff before overwriting.
+The former steward-pool sync workflow is retained for audit history only. Generic engineering
+semantics are owned by the root `_ai-context/agentic-ai/` foundation; do not pull these files
+into new consumers or add a runtime dependency on this directory.
 
 ## Context preservation and discovery reuse
 

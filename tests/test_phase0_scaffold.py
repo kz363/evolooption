@@ -1,6 +1,9 @@
+import pytest
+
 from evolooption import __version__
 from evolooption.agents import ActivationRule, AgentSelector, AgentSpec, QueryContext
 from evolooption.evolution.models import Proposal, Signal
+from evolooption.evolution.retirement import RetiredFrameworkError
 from evolooption.evolution.scaffolder import Scaffolder, ScaffoldRequest
 from evolooption.learning import InMemoryLessonStore, Lesson
 from evolooption.policy import AutonomyTier, ProtectedSurface, action_policy_for_tier
@@ -46,17 +49,16 @@ def test_selector_applies_activation_from_specs() -> None:
     assert [agent.name for agent in selected] == ["reviewer"]
 
 
-def test_scaffolder_calls_metric_snapshot_hook(tmp_path) -> None:
+def test_scaffolder_rejects_retired_writes(tmp_path) -> None:
     proposal = Proposal(kind="new-agent", name="reviewer", rationale="needed")
-    result = Scaffolder().scaffold(
-        ScaffoldRequest(
-            proposal=proposal,
-            root=tmp_path,
-            metric_snapshot_hook=lambda: {"metric": 1.0},
+    with pytest.raises(RetiredFrameworkError):
+        Scaffolder().scaffold(
+            ScaffoldRequest(
+                proposal=proposal,
+                root=tmp_path,
+                metric_snapshot_hook=lambda: {"metric": 1.0},
+            )
         )
-    )
-
-    assert result.metadata == {"metric_snapshot": {"metric": 1.0}}
 
 
 def test_learning_store_returns_copy() -> None:

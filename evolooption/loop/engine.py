@@ -5,6 +5,7 @@ from typing import Any
 
 from evolooption.evolution.models import Outcome
 from evolooption.evolution.postmortem import RootCauseAnalyzer
+from evolooption.evolution.retirement import RetiredFrameworkError
 from evolooption.execution.interfaces import ActionExecutor
 from evolooption.execution.policy import ActionPolicy
 from evolooption.loop.contracts import Goal, IterationResult
@@ -40,7 +41,7 @@ class EvolutionLoop:
             if proposed_action is not None:
                 try:
                     self._execute_allowed_action(proposed_action)
-                except PermissionError as error:
+                except (PermissionError, RetiredFrameworkError) as error:
                     ledger.add(
                         IterationResult(
                             iteration=iteration,
@@ -73,6 +74,11 @@ class EvolutionLoop:
         return ledger
 
     def _execute_allowed_action(self, action: dict[str, Any]) -> None:
+        raise RetiredFrameworkError(
+            "evolooption framework is retired; proposed actions are unavailable"
+        )
+
+        # The historical policy and executor path remains below the retirement boundary.
         tool_name = str(action.get("tool", ""))
         arguments = dict(action.get("arguments", {}))
         estimated_cost = float(action.get("cost", 0.0))

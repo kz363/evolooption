@@ -1,5 +1,7 @@
 import subprocess
 
+import pytest
+
 from evolooption.policy.verification import VerificationCommand, VerificationRunner
 from evolooption.policy.worktree import WorktreeRunner
 
@@ -32,23 +34,34 @@ def test_verification_runner_stops_after_failure(monkeypatch) -> None:
 
 
 def test_worktree_runner_returns_changed_paths(monkeypatch, tmp_path) -> None:
+    calls = []
+
     def fake_run(command, cwd, check, capture_output, text, timeout):
-        assert command == ["git", "diff", "--name-only"]
         assert cwd == tmp_path
-        return Completed(stdout="metrics/evaluator.py\n\npolicy/autonomy.py\n")
+        calls.append(command)
+        if command == ["git", "diff", "--name-only", "HEAD"]:
+            return Completed(stdout="metrics/evaluator.py\n\npolicy/autonomy.py\n")
+        assert command == ["git", "ls-files", "--others", "--exclude-standard"]
+        return Completed(stdout="agents/new.md\n")
 
     monkeypatch.setattr(subprocess, "run", fake_run)
 
     assert WorktreeRunner(tmp_path).changed_paths() == [
         "metrics/evaluator.py",
         "policy/autonomy.py",
+        "agents/new.md",
+    ]
+    assert calls == [
+        ["git", "diff", "--name-only", "HEAD"],
+        ["git", "ls-files", "--others", "--exclude-standard"],
     ]
 
 
-def test_worktree_runner_fail_closed_to_empty_list(monkeypatch, tmp_path) -> None:
+def test_worktree_runner_raises_on_git_failure(monkeypatch, tmp_path) -> None:
     def fake_run(command, cwd, check, capture_output, text, timeout):
         return Completed(returncode=1, stderr="not a repo")
 
     monkeypatch.setattr(subprocess, "run", fake_run)
 
-    assert WorktreeRunner(tmp_path).changed_paths() == []
+    with pytest.raises(RuntimeError, match="could not enumerate changed paths"):
+        WorktreeRunner(tmp_path).changed_paths()

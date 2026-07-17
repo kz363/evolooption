@@ -54,11 +54,11 @@ def test_loop_runs_fake_domain_to_success() -> None:
 
     ledger = loop.run(
         Goal(prompt="raise score", target_metric="score"),
-        {"score": 1.0, "target": 1.0, "action": {"tool": "improve", "arguments": {}}},
+        {"score": 1.0, "target": 1.0},
     )
 
     assert ledger.latest().success
-    assert executor.calls == [("improve", {})]
+    assert executor.calls == []
 
 
 def test_loop_records_unallowed_action_as_blocked_iteration() -> None:
@@ -75,7 +75,7 @@ def test_loop_records_unallowed_action_as_blocked_iteration() -> None:
 
     assert ledger.latest().success is False
     assert ledger.latest().metadata["blocked"] is True
-    assert "tool is not allowed" in ledger.latest().metadata["reason"]
+    assert "framework is retired" in ledger.latest().metadata["reason"]
     assert executor.calls == []
 
 
@@ -92,11 +92,11 @@ def test_loop_blocks_missing_human_approval_fail_closed() -> None:
     )
 
     assert ledger.latest().metadata["blocked"] is True
-    assert "human approval required" in ledger.latest().metadata["reason"]
+    assert "framework is retired" in ledger.latest().metadata["reason"]
     assert executor.calls == []
 
 
-def test_loop_allows_operator_approved_action() -> None:
+def test_loop_rejects_operator_approved_action_after_retirement() -> None:
     executor = FakeActionExecutor()
     loop = make_loop(
         executor=executor,
@@ -113,11 +113,12 @@ def test_loop_allows_operator_approved_action() -> None:
         },
     )
 
-    assert ledger.latest().success
-    assert executor.calls == [("improve", {"safe": True})]
+    assert ledger.latest().success is False
+    assert "framework is retired" in ledger.latest().metadata["reason"]
+    assert executor.calls == []
 
 
-def test_loop_records_spend_and_blocks_later_iteration() -> None:
+def test_loop_rejects_proposed_action_before_spend_policy() -> None:
     executor = FakeActionExecutor()
     loop = make_loop(
         executor=executor,
@@ -134,11 +135,11 @@ def test_loop_records_spend_and_blocks_later_iteration() -> None:
         {"score": 0.0, "target": 1.0, "action": {"tool": "improve", "cost": 0.75}},
     )
 
-    assert [result.metadata.get("blocked", False) for result in ledger.results] == [False, True]
-    assert len(executor.calls) == 1
+    assert [result.metadata.get("blocked", False) for result in ledger.results] == [True]
+    assert executor.calls == []
 
 
-def test_loop_records_rate_and_blocks_later_iteration() -> None:
+def test_loop_rejects_proposed_action_before_rate_policy() -> None:
     executor = FakeActionExecutor()
     loop = make_loop(
         executor=executor,
@@ -154,8 +155,8 @@ def test_loop_records_rate_and_blocks_later_iteration() -> None:
         {"score": 0.0, "target": 1.0, "action": {"tool": "improve"}},
     )
 
-    assert [result.metadata.get("blocked", False) for result in ledger.results] == [False, True]
-    assert len(executor.calls) == 1
+    assert [result.metadata.get("blocked", False) for result in ledger.results] == [True]
+    assert executor.calls == []
 
 
 def test_loop_blocks_protected_surface_changes_from_provider() -> None:
@@ -172,8 +173,8 @@ def test_loop_blocks_protected_surface_changes_from_provider() -> None:
     )
 
     assert ledger.latest().metadata["blocked"] is True
-    assert "protected surface modified" in ledger.latest().metadata["reason"]
-    assert executor.calls == [("improve", {})]
+    assert "framework is retired" in ledger.latest().metadata["reason"]
+    assert executor.calls == []
 
 
 def test_loop_allows_unprotected_changed_paths() -> None:
@@ -186,11 +187,11 @@ def test_loop_allows_unprotected_changed_paths() -> None:
 
     ledger = loop.run(
         Goal(prompt="raise score", target_metric="score"),
-        {"score": 1.0, "target": 1.0, "action": {"tool": "improve", "arguments": {}}},
+        {"score": 1.0, "target": 1.0},
     )
 
     assert ledger.latest().success
-    assert executor.calls == [("improve", {})]
+    assert executor.calls == []
 
 
 def test_loop_persists_iteration_ledger_jsonl(tmp_path) -> None:
@@ -198,7 +199,7 @@ def test_loop_persists_iteration_ledger_jsonl(tmp_path) -> None:
 
     loop.run(
         Goal(prompt="raise score", target_metric="score"),
-        {"score": 1.0, "target": 1.0, "action": {"tool": "improve", "arguments": {}}},
+        {"score": 1.0, "target": 1.0},
     )
 
     assert "raise score" not in (tmp_path / "ledger.jsonl").read_text(encoding="utf-8")

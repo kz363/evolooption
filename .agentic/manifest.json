@@ -6,7 +6,7 @@
   "agents": [
     {
       "id": "serial-backlog-runner",
-      "owner": "evolooption:domain",
+      "owner": "evolooption:historical",
       "title": "Serial Backlog Runner",
       "body_path": "agents/serial-backlog-runner.md",
       "version": "1.0.0",
@@ -14,7 +14,7 @@
       "permission_profile": "implementer",
       "trust_class": "mutating",
       "data_class": "internal",
-      "disposition": "retain",
+      "disposition": "deprecate",
       "mode": "implementer",
       "role_mode": "implementer",
       "scope": "backlog-execution",
@@ -32,7 +32,7 @@
     },
     {
       "id": "backlog-orchestrator",
-      "owner": "evolooption:domain",
+      "owner": "evolooption:historical",
       "title": "Backlog Orchestrator",
       "body_path": "agents/backlog-orchestrator.md",
       "version": "1.0.0",
@@ -40,7 +40,7 @@
       "permission_profile": "orchestrator",
       "trust_class": "mutating",
       "data_class": "internal",
-      "disposition": "retain",
+      "disposition": "deprecate",
       "mode": "orchestrator",
       "role_mode": "orchestrator",
       "scope": "orchestration",

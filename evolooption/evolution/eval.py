@@ -15,6 +15,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from evolooption.evolution.retirement import RetiredFrameworkError
+
 # Placeholder: map EvalResult to the existing Signal model for consistent
 # telemetry across the evolution pipeline.
 # from evolooption.evolution.models import Signal
@@ -65,33 +67,31 @@ class Baseline:
 
     @property
     def score(self) -> float:
-        return passed_count / total_count if total_count > 0 else 0.0
+        return self.passed_count / self.total_count if self.total_count > 0 else 0.0
 
 
 class EvalRunner:
     """Run an EvalSuite against an agent and produce EvalResult list."""
 
     def run(self, agent_spec: dict[str, Any], suite: EvalSuite) -> list[EvalResult]:
-        """Stub — actual execution requires agent instantiation + sandboxing.
-        For now, return empty results; real implementation will execute.
-        """
-        return [EvalResult(case.name, False, error="stub - not implemented") for case in suite.cases]
+        """Reject evaluation because the framework is retired."""
+        raise RetiredFrameworkError("evolooption evaluation is retired; execution is unavailable")
 
 
-def check_promotion_gate(agent_name: str, suite: EvalSuite, baseline_path: Path) -> tuple[bool, str]:
-    """Check whether an agent passes the promotion gate.
-
-    Returns (accepted, reason) where accepted=True means:
-    - All cases in suite have run, and
-    - Score meets or exceeds recorded baseline (or no baseline exists yet,
-      in which case we record a new one).
-
-    Note: This is a lightweight gate. Full implementation lives in
-    `evolooption/evolution/eval.py` — for now this stub documents intent.
-    """
-    if len(suite.cases) < 20:
-        return False, f"eval gate requires ≥20 cases (got {len(suite.cases)})"
-    return True, "passed (stub)"
+def check_promotion_gate(
+    agent_name: str,
+    suite: EvalSuite,
+    baseline_path: Path,
+) -> tuple[bool, str]:
+    """Return an explicit unavailable result for the retired framework."""
+    return False, "evolooption framework is retired; promotion is unavailable"
 
 
-__all__ = ["EvalCase", "EvalResult", "EvalSuite", "Baseline", "EvalRunner", "check_promotion_gate"]
+__all__ = [
+    "Baseline",
+    "EvalCase",
+    "EvalResult",
+    "EvalRunner",
+    "EvalSuite",
+    "check_promotion_gate",
+]

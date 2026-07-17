@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from evolooption.evolution.models import Proposal
+from evolooption.evolution.retirement import RetiredFrameworkError
 
 MetricSnapshotHook = Callable[[], dict[str, object]]
 
@@ -22,17 +23,6 @@ class ScaffoldResult:
 
 class Scaffolder:
     def scaffold(self, request: ScaffoldRequest) -> ScaffoldResult:
-        snapshot = request.metric_snapshot_hook() if request.metric_snapshot_hook else None
-        written: list[Path] = []
-        for relative_path, content in request.proposal.artifacts.items():
-            target = (request.root / relative_path).resolve()
-            root = request.root.resolve()
-            if root not in target.parents and target != root:
-                raise ValueError(f"artifact escapes scaffold root: {relative_path}")
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text(content, encoding="utf-8")
-            written.append(target)
-        return ScaffoldResult(
-            written_paths=written,
-            metadata={"metric_snapshot": snapshot},
+        raise RetiredFrameworkError(
+            "evolooption scaffolding is retired; artifact writes are unavailable"
         )

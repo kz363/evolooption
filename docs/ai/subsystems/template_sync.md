@@ -1,12 +1,14 @@
 # template_sync
 
-Status: maintained
+Status: retired
 Last audited: 2026-07-08
 Audited by: source-code exploration + plan implementation
 
 ## Purpose
 
-`evolooption/template/` is the seed source for generic "steward pool" agents. It provides canonical agent bodies that are pulled into alpacagents and evolooption (the root) using `scripts/sync-steward-pool.ps1`. The pattern is: **pull once, elaborate locally, diverge by design**.
+`evolooption/template/` is a frozen historical steward pool. It is not a canonical source,
+is not synchronized into consumers, and must not receive new framework features. Generic
+engineering semantics are owned by the root `_ai-context/agentic-ai/` foundation.
 
 ## Entrypoints
 - `scripts/sync-steward-pool.ps1` — PowerShell sync script (cross-platform)
@@ -28,12 +30,10 @@ Audited by: source-code exploration + plan implementation
   - `Check` — detect drift between template and target, do not modify
   - `Sync` — copy template files to target, overwrite destination
 
-## Workflow
+## Historical workflow
 
-1. **Detect drift**: `scripts/sync-steward-pool.ps1 -SourceRepo template -TargetRepo . -Agent <name> -Mode Check`
-2. **Review diff**: if differences found, decide whether to keep local elaborations or revert to template
-3. **Sync if approved**: `-Mode Sync` overwrites target with template source
-4. **Local elaboration**: after pull, Kilo adapters and batch-state logic are added on top of the canonical body
+The former detect/review/sync workflow is retained only to explain historical files. Do not
+run it for new work; use the root foundation generator and repo-local ownership instead.
 
 ## Known pitfalls
 
@@ -42,11 +42,9 @@ Audited by: source-code exploration + plan implementation
 - **Only pull generic stewards** — never pull local-architect or local-reviewer agents from template; those are repo-specific by design.
 - **Template doesn't have `.kilo/skills/`** — skills are repo-specific and not synced.
 
-## Cross-repo references
+## Historical cross-repo references
 
-- `alpacagents/scripts/sync-steward-pool.ps1` pulls from `../evolooption/template/`
-- `evolooption/.steward-pool.json` records the last-synced source commit
-- After sync, alpacagents localizes agents for the alpacagents trading domain
+- Existing sync scripts and `.steward-pool.json` remain for audit and history only.
 
 ## Related notes
 - `../../alpacagents/docs/ai/subsystems/steward_pattern.md` — the triad pattern that steward sync ships

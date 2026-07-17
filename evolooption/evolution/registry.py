@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Any
 
 from evolooption.agents.spec import ActivationRule, AgentSpec
+from evolooption.evolution.retirement import RetiredFrameworkError
 
 
 def activation_from_dict(data: dict[str, Any] | None) -> ActivationRule | None:
@@ -50,19 +51,11 @@ def load_dynamic_entries(path: Path) -> list[AgentSpec]:
 
 
 def write_dynamic_entry(path: Path, spec: AgentSpec) -> None:
-    entries = [entry for entry in load_dynamic_entries(path) if entry.name != spec.name]
-    entries.append(spec)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    _write_entries(path, entries)
+    raise RetiredFrameworkError("evolooption dynamic registry is retired; writes are unavailable")
 
 
 def remove_dynamic_entry(path: Path, name: str) -> bool:
-    entries = load_dynamic_entries(path)
-    filtered = [entry for entry in entries if entry.name != name]
-    if len(filtered) == len(entries):
-        return False
-    _write_entries(path, filtered)
-    return True
+    raise RetiredFrameworkError("evolooption dynamic registry is retired; writes are unavailable")
 
 
 def merge_specs(

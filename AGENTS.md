@@ -1,6 +1,7 @@
 # Repository Agent Rules
 
-This repository contains the reusable `evolooption` framework and starter template.
+This repository contains the retired and frozen historical `evolooption` framework and
+starter template. It accepts no new consumers or framework features.
 
 ## Workspace context
 
@@ -31,16 +32,17 @@ self-check, teach-don't-gatekeep review). On-demand skills for task-specific gui
 | Repo Janitor | Audit repo bloat, stale docs, deprecated artifacts, and search-context noise |
 | Autonomous Optimization Architect | Adding or reviewing LLM routing, circuit breakers, cost tracking, or shadow-traffic logic; optimizing provider spend, latency, or reliability |
 
-Every steward has a canonical `.github/agents/<name>.agent.md` body, a thin `.kilo/agent/<name>.md` adapter, and a thin `.codex/agents/<name>.toml` adapter. Code Standards Reviewer and PR Review Orchestrator here are adapted specifically for this repo (its own verification commands and rules) rather than synced from `template/`. Backlog Orchestrator, Context/Token-Efficiency Steward, AI Workflow Architect, and Repo Janitor are genuinely generic and are pulled from `template/` via `scripts/sync-steward-pool.ps1 -SourceRepo template -TargetRepo . -Agent backlog-orchestrator,context-token-efficiency,ai-workflow-architect,repo-janitor`; see `.steward-pool.json` for the last-synced source commit — re-run the script (default `-Mode Check`) to detect drift before assuming the local copy is current.
+Every steward has a canonical `.github/agents/<name>.agent.md` body, a thin `.kilo/agent/<name>.md` adapter, and a thin `.codex/agents/<name>.toml` adapter. These files are retained as frozen historical assets. The former `template/` sync workflow is retired; generic engineering semantics are owned by the root foundation.
 
 ## Manifest registry and ownership
 
 The `.agentic/manifest.json` is the declarative registry for this repo's agents, commands, skills, and eval suites. Each entry declares an `owner` field:
 
-- `"evolooption:domain"` — owned and maintained by the evolooption framework; consumers should treat these as canonical sources.
-- `"user:domain"` — owned by the consuming project; adapted from template stubs.
+- `"evolooption:domain"` — historical assets retained in this frozen repository.
+- `"user:domain"` — owned by the consuming project; no new template sync is supported.
 
-Framework agents are registered here with `"owner": "evolooption:domain"` and pulled from `agents/` bodies. Consuming repos start from `template/.agentic/manifest.json` (seed) and populate entries with `"owner": "user:domain"`.
+Framework agents are registered here only as historical inventory. The root foundation is
+the canonical owner for generic engineering assets; this repository is not a runtime source.
 
 ### Schema and validation
 
